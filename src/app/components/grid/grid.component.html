@@ -1,1 +1,20 @@
-<p>grid works!</p>
+<div class="grid-wrapper">
+  <div class="grid" *ngIf="board">
+    <div class="row" *ngFor="let row of board.cells; let r = index">
+      <div
+        class="cell"
+        *ngFor="let cell of row; let c = index"
+        [style.background-color]="getRectColor(r, c)"
+        (mousedown)="onCellMouseDown(r, c)"
+        (mouseup)="onCellMouseUp(r, c)"
+      >
+        <span *ngIf="cell !== 0">{{ cell }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button (click)="solve()">Resolver automático</button>
+    <button (click)="reset()">Reiniciar</button>
+  </div>
+</div>
