@@ -3,10 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { GridComponent } from './components/grid/grid.component';
+import { ControlsComponent } from './components/controls/controls.component';
+import { VictoryComponent } from './components/victory/victory.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    GridComponent,
+    ControlsComponent,
+    VictoryComponent
   ],
   imports: [
     BrowserModule,
