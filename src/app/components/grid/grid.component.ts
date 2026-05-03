@@ -44,19 +44,36 @@
     }
 
     onCellMouseUp(row: number, col: number): void {
-      if (!this.currentRect) return;
+  if (!this.currentRect) return;
 
-      const rect: Rectangle = {
-        startRow: Math.min(this.currentRect.startRow!, row),
-        startCol: Math.min(this.currentRect.startCol!, col),
-        endRow: Math.max(this.currentRect.startRow!, row),
-        endCol: Math.max(this.currentRect.startCol!, col),
-      };
+  const rect: Rectangle = {
+    startRow: Math.min(this.currentRect.startRow!, row),
+    startCol: Math.min(this.currentRect.startCol!, col),
+    endRow: Math.max(this.currentRect.startRow!, row),
+    endCol: Math.max(this.currentRect.startCol!, col),
+  };
 
-      this.rectangles.push(rect);
-      this.currentRect = null;
-      this.checkVictory();
-    }
+  // ✅ FIX 1: Eliminar cualquier rectángulo que se solape con el nuevo
+  this.rectangles = this.rectangles.filter(
+    r => !this.overlaps(r, rect)
+  );
+
+  // ✅ FIX 2 (opcional): Validar que el área sea correcta para Shikaku
+  // (puede ser rectángulo, no solo cuadrado — Shikaku admite ambos)
+  this.rectangles.push(rect);
+  this.currentRect = null;
+  this.checkVictory();
+}
+
+// Método auxiliar: dos rectángulos se solapan si comparten alguna celda
+private overlaps(a: Rectangle, b: Rectangle): boolean {
+  return (
+    a.startRow <= b.endRow &&
+    a.endRow >= b.startRow &&
+    a.startCol <= b.endCol &&
+    a.endCol >= b.startCol
+  );
+}
 
     solve(): void {
       if (!this.board) return;
