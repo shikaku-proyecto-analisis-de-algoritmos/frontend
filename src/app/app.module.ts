@@ -6,19 +6,23 @@ import { AppComponent } from './app.component';
 import { GridComponent } from './components/grid/grid.component';
 import { ControlsComponent } from './components/controls/controls.component';
 import { VictoryComponent } from './components/victory/victory.component';
-import { HttpClientModule } from '@angular/common/http'; // ← agrega este import
+import { HttpClientModule } from '@angular/common/http';
+import { SignInComponent } from './components/sign-in/sign-in.component'; // ← agrega este import
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     GridComponent,
     ControlsComponent,
-    VictoryComponent
+    VictoryComponent,
+    SignInComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
