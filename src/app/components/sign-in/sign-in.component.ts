@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registro',
@@ -12,6 +13,8 @@ export class SignInComponent {
   correo: string = '';
   password: string = '';
 
+  constructor(private router: Router) {}
+
   registrar(): void {
 
     console.log('Usuario:', this.usuario);
@@ -19,6 +22,7 @@ export class SignInComponent {
     console.log('Contraseña:', this.password);
 
     alert('Registro exitoso');
+    this.router.navigate(['/grid']);
   }
 
 }
