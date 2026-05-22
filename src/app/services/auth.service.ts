@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RegisterRequest } from '../models/auth.model'; // Asegúrate de que la ruta sea correcta
+import { RegisterRequest, LoginRequest } from '../models/auth.model'; // Asegúrate de que la ruta sea correcta
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +17,9 @@ export class AuthService {
     return this.http.post<any>(this.apiUrl, userData);
   }
 
-  // Otros métodos de autenticación como login, logout, etc. irían aquí
+  login(credentials: LoginRequest): Observable<any> {
+    const loginUrl = `http://localhost:8000/login`;
+    return this.http.post<any>(loginUrl, credentials);
+  }
+
 }

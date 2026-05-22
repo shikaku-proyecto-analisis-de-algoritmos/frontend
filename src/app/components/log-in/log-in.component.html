@@ -10,19 +10,18 @@
       <form (ngSubmit)="iniciarSesion()" #loginForm="ngForm">
 
         <div class="mb-3">
-          <label class="form-label">Correo</label>
+          <label class="form-label">Usuario</label>
           <input 
-            type="email"
+            type="text"
             class="form-control"
-            [(ngModel)]="correo"
-            name="correo"
-            placeholder="Ingresa tu correo"
-            #correoModel="ngModel"
+            [(ngModel)]="usuario"
+            name="usuario"
+            placeholder="Ingresa tu usuario"
+            #usuarioModel="ngModel"
             required
-            email
           >
-          <div *ngIf="correoModel.invalid && correoModel.touched" class="text-danger small">
-            Ingresa un correo electrónico válido.
+          <div *ngIf="usuarioModel.invalid && usuarioModel.touched" class="text-danger small">
+            El nombre de usuario es obligatorio.
           </div>
         </div>
 
