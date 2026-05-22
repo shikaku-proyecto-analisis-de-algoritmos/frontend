@@ -7,7 +7,7 @@
         Registro Shikaku
       </h2>
 
-      <form (ngSubmit)="registrar()">
+      <form (ngSubmit)="registrar()" #registroForm="ngForm">
 
         <div class="mb-3">
           <label class="form-label">Usuario</label>
@@ -17,8 +17,12 @@
             [(ngModel)]="usuario"
             name="usuario"
             placeholder="Ingresa tu usuario"
+            #usuarioModel="ngModel"
             required
           >
+          <div *ngIf="usuarioModel.invalid && usuarioModel.touched" class="text-danger small">
+            El nombre de usuario es obligatorio.
+          </div>
         </div>
 
         <div class="mb-3">
@@ -29,8 +33,13 @@
             [(ngModel)]="correo"
             name="correo"
             placeholder="Ingresa tu correo"
+            #correoModel="ngModel"
             required
+            email
           >
+          <div *ngIf="correoModel.invalid && correoModel.touched" class="text-danger small">
+            Ingresa un correo electrónico válido.
+          </div>
         </div>
 
         <div class="mb-3">
@@ -41,11 +50,16 @@
             [(ngModel)]="password"
             name="password"
             placeholder="Ingresa tu contraseña"
+            #passwordModel="ngModel"
             required
+            minlength="6"
           >
+          <div *ngIf="passwordModel.invalid && passwordModel.touched" class="text-danger small">
+            La contraseña debe tener al menos 6 caracteres.
+          </div>
         </div>
 
-        <button class="btn btn-primary w-100 mt-3" type="submit">
+        <button class="btn btn-primary w-100 mt-3" type="submit" [disabled]="registroForm.invalid">
           Registrarse
         </button>
 

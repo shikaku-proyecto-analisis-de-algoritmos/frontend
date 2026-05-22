@@ -1,33 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
-import { LoginRequest, RegisterRequest, TokenResponse } from '../models/auth.model';
+import { Observable } from 'rxjs';
+import { RegisterRequest } from '../models/auth.model'; // Asegúrate de que la ruta sea correcta
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-  private apiUrl = 'http://localhost:8000';
+  // Ajusta esta URL a la de tu backend para el registro de usuarios
+  private apiUrl = 'http://localhost:8000/register'; 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  login(data: LoginRequest) {
-    return this.http.post<TokenResponse>(`${this.apiUrl}/auth/login`, data).pipe(
-      tap(res => localStorage.setItem('token', res.access_token))
-    );
+  register(userData: RegisterRequest): Observable<any> {
+    // Aquí se realiza la petición POST al backend
+    return this.http.post<any>(this.apiUrl, userData);
   }
 
-  register(data: RegisterRequest) {
-    return this.http.post<TokenResponse>(`${this.apiUrl}/auth/register`, data);
-  }
-
-  logout() {
-    localStorage.removeItem('token');
-  }
-
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
+  // Otros métodos de autenticación como login, logout, etc. irían aquí
 }

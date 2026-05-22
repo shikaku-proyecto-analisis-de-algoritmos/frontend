@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service'; // Importa el nuevo servicio
+import { RegisterRequest } from '../../models/auth.model'; // Importa la interfaz de registro
 
 @Component({
   selector: 'app-registro',
@@ -13,16 +15,30 @@ export class SignInComponent {
   correo: string = '';
   password: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {} // Inyecta AuthService
 
   registrar(): void {
-
     console.log('Usuario:', this.usuario);
     console.log('Correo:', this.correo);
     console.log('Contraseña:', this.password);
 
-    alert('Registro exitoso');
-    this.router.navigate(['/grid']);
-  }
+    const userData: RegisterRequest = {
+      username: this.usuario,
+      password: this.password,
+      // Si tu backend espera el correo, asegúrate de añadirlo a RegisterRequest en auth.model.ts
+      // email: this.correo 
+    };
 
+    this.authService.register(userData).subscribe({
+      next: (response) => {
+        console.log('Registro exitoso en el backend:', response);
+        alert('Registro exitoso');
+        this.router.navigate(['/grid']); // Redirige después del registro exitoso
+      },
+      error: (error) => {
+        console.error('Error al registrar usuario:', error);
+        alert('Error al registrar usuario: ' + (error.error.message || 'Inténtalo de nuevo.'));
+      }
+    });
+  }
 }

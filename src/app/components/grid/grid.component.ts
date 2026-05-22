@@ -114,8 +114,11 @@ private overlaps(a: Rectangle, b: Rectangle): boolean {
 
     solve(): void {
       if (!this.board) return;
-      this.shikakuService.solve(this.board).subscribe(data => {
-        this.rectangles = data.solution;
+      this.shikakuService.solve(this.board).subscribe({
+        next: (data) => {
+          this.rectangles = data.solution;
+        },
+        error: (err) => console.error('Error al resolver el puzzle', err)
       });
     }
 
@@ -124,9 +127,17 @@ private overlaps(a: Rectangle, b: Rectangle): boolean {
     }
 
     checkVictory(): void {
-      // lógica simple: verificar con el backend si la solución es correcta
-      this.shikakuService.validate(this.board!, this.rectangles).subscribe(data => {
-        if (data.valid) alert('¡Ganaste!'); // luego reemplazas por el modal
+      if (!this.board || this.rectangles.length === 0) return;
+
+      this.shikakuService.validate(this.board, this.rectangles).subscribe({
+        next: (data) => {
+          if (data.valid) {
+            alert('¡Ganaste!');
+            // Aquí podrías llamar a un método para guardar el récord en la BD
+            // this.saveGameRecord(); 
+          }
+        },
+        error: (err) => console.error('Error en la validación', err)
       });
     }
 
