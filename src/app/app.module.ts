@@ -9,6 +9,7 @@ import { VictoryComponent } from './components/victory/victory.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SignInComponent } from './components/sign-in/sign-in.component'; // ← agrega este import
 import { FormsModule } from '@angular/forms';
+import { LogInComponent } from './components/log-in/log-in.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FormsModule } from '@angular/forms';
     GridComponent,
     ControlsComponent,
     VictoryComponent,
-    SignInComponent
+    SignInComponent,
+    LogInComponent
   ],
   imports: [
     BrowserModule,

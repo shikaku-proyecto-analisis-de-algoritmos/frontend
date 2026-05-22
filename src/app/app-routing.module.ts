@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { GridComponent } from './components/grid/grid.component';
+import { LogInComponent } from './components/log-in/log-in.component';
 
 const routes: Routes = [
 
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'grid',
     component: GridComponent
+  },
+  {
+    path: 'login', // Nueva ruta para el componente de inicio de sesión
+    component: LogInComponent
   }
 
 ];

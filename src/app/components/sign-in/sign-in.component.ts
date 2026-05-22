@@ -33,7 +33,7 @@ export class SignInComponent {
       next: (response) => {
         console.log('Registro exitoso en el backend:', response);
         alert('Registro exitoso');
-        this.router.navigate(['/grid']); // Redirige después del registro exitoso
+        this.router.navigate(['/login']); // Redirige después del registro exitoso a la página de login
       },
       error: (error) => {
         console.error('Error al registrar usuario:', error);
