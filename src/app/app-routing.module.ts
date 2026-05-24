@@ -4,11 +4,16 @@ import { RouterModule, Routes } from '@angular/router';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { GridComponent } from './components/grid/grid.component';
 import { LogInComponent } from './components/log-in/log-in.component';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
 
   {
     path: '',
+    component: HomeComponent
+  },
+  {
+    path: 'registro',
     component: SignInComponent
   },
   {

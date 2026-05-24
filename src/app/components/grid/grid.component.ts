@@ -186,6 +186,37 @@ export class GridComponent implements OnInit, OnDestroy {
     });
   }
 
+  getCellClasses(r: number, c: number): { [key: string]: boolean } {
+    const classes: { [key: string]: boolean } = {};
+    
+    // Buscar si la celda está dentro de un rectángulo ya confirmado
+    const rect = this.rectangles.find(rect => this.inRect(r, c, rect));
+    if (rect) {
+      classes['border-top-thick'] = r === rect.startRow;
+      classes['border-bottom-thick'] = r === rect.endRow;
+      classes['border-left-thick'] = c === rect.startCol;
+      classes['border-right-thick'] = c === rect.endCol;
+      
+      classes['border-top-none'] = r > rect.startRow;
+      classes['border-bottom-none'] = r < rect.endRow;
+      classes['border-left-none'] = c > rect.startCol;
+      classes['border-right-none'] = c < rect.endCol;
+    } else if (this.previewRect && this.inRect(r, c, this.previewRect)) {
+      // Clases para el rectángulo de vista previa en tiempo real
+      classes['preview-top'] = r === this.previewRect.startRow;
+      classes['preview-bottom'] = r === this.previewRect.endRow;
+      classes['preview-left'] = c === this.previewRect.startCol;
+      classes['preview-right'] = c === this.previewRect.endCol;
+      
+      classes['border-top-none'] = r > this.previewRect.startRow;
+      classes['border-bottom-none'] = r < this.previewRect.endRow;
+      classes['border-left-none'] = c > this.previewRect.startCol;
+      classes['border-right-none'] = c < this.previewRect.endCol;
+    }
+    
+    return classes;
+  }
+
   getRectColor(row: number, col: number): string {
     // Primero mostrar preview (encima de todo)
     if (this.previewRect && this.inRect(row, col, this.previewRect)) {

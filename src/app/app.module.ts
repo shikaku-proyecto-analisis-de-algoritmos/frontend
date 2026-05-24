@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { SignInComponent } from './components/sign-in/sign-in.component'; // ← agrega este import
 import { FormsModule } from '@angular/forms';
 import { LogInComponent } from './components/log-in/log-in.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { LogInComponent } from './components/log-in/log-in.component';
     ControlsComponent,
     VictoryComponent,
     SignInComponent,
-    LogInComponent
+    LogInComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

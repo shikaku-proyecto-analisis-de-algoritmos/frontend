@@ -1,7 +1,7 @@
 <div class="grid-wrapper py-4">
   <!-- Tarjeta del temporizador premium -->
   <div class="timer-container shadow-sm mb-4">
-    <div class="d-flex align-items-center justify-content-center gap-3 py-2 px-4 rounded-pill bg-white border">
+    <div class="timer-card d-flex align-items-center justify-content-center gap-3 py-2 px-4 rounded-pill border">
       <span class="timer-icon">⏱️</span>
       <div class="d-flex flex-column align-items-start">
         <span class="timer-label text-uppercase text-muted fw-bold">Tiempo</span>
@@ -24,7 +24,7 @@
         class="cell"
         *ngFor="let cell of row; let c = index"
         [style.background-color]="getRectColor(r, c)"
-        [class.is-preview]="previewRect && inRect(r, c, previewRect)"
+        [ngClass]="getCellClasses(r, c)"
         (mousedown)="onCellMouseDown(r, c)"
         (mousemove)="onCellMouseMove(r, c)"
         (mouseup)="onCellMouseUp(r, c)"
@@ -32,5 +32,18 @@
         <span *ngIf="cell !== 0">{{ cell }}</span>
       </div>
     </div>
+  </div>
+
+  <!-- Botones de Acción Premium -->
+  <div class="action-buttons-container mt-4 d-flex gap-3 justify-content-center">
+    <button class="btn-verify d-flex align-items-center gap-2" (click)="checkVictory()">
+      <span class="btn-icon">✔️</span>
+      <span class="btn-text">Verificar Respuesta</span>
+    </button>
+    
+    <button class="btn-solve d-flex align-items-center gap-2" (click)="solve()">
+      <span class="btn-icon">💡</span>
+      <span class="btn-text">Resolver Puzzle</span>
+    </button>
   </div>
 </div>

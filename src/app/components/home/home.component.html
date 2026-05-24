@@ -1,0 +1,224 @@
+<!-- Navbar Premium -->
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar shadow-sm sticky-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold logo-brand animate-fade-in" routerLink="/">
+      <span class="logo-icon">🔲</span>
+      <span class="logo-text font-monospace text-uppercase tracking-wider">Shikaku</span>
+    </a>
+    
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center gap-3 mt-3 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link text-white-50 hover-light px-3" href="#como-jugar">¿Cómo Jugar?</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white-50 hover-light px-3" href="#caracteristicas">Características</a>
+        </li>
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-outline-light btn-nav-login px-4 rounded-pill transition-all" routerLink="/login">
+            Iniciar Sesión
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-accent-purple px-4 rounded-pill transition-all text-white shadow-sm" routerLink="/registro">
+            Registrarse
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero-section py-5 d-flex align-items-center position-relative overflow-hidden">
+  <div class="hero-bg-gradients">
+    <div class="gradient-sphere blob-1"></div>
+    <div class="gradient-sphere blob-2"></div>
+  </div>
+
+  <div class="container position-relative z-index-1">
+    <div class="row align-items-center min-vh-75 py-4">
+      <div class="col-lg-6 mb-5 mb-lg-0 text-center text-lg-start animate-slide-up">
+        <span class="badge badge-premium px-3 py-2 rounded-pill mb-3 text-uppercase font-monospace tracking-wide">
+          ✨ Rompecabezas de Lógica Japonés
+        </span>
+        <h1 class="display-3 fw-extrabold text-white mb-4 tracking-tight hero-title">
+          Divide y <span class="text-gradient-gold">Vencerás</span>
+        </h1>
+        <p class="lead text-white-50 mb-5 max-w-500 font-sans">
+          Descubre el fascinante mundo de <strong>Shikaku</strong>. Desafía tu mente dividiendo la cuadrícula en rectángulos perfectos que coincidan con sus áreas. Simple de aprender, infinitamente adictivo de dominar.
+        </p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3">
+          <button class="btn btn-primary-gradient btn-lg px-5 py-3 rounded-pill shadow fw-bold transition-scale" (click)="irAlJuego()">
+            🎮 ¡Jugar Shikaku Ahora!
+          </button>
+          <a class="btn btn-outline-blur btn-lg px-5 py-3 rounded-pill fw-bold text-white transition-scale" routerLink="/registro">
+            Crear Cuenta Gratis
+          </a>
+        </div>
+      </div>
+      
+      <!-- Mock Interactive Shikaku Grid Demo -->
+      <div class="col-lg-6 d-flex justify-content-center align-items-center animate-fade-in-delayed">
+        <div class="mock-grid-card shadow-lg p-4 rounded-4 text-center">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="badge bg-success-soft rounded-pill px-3 py-1 font-monospace small">Nivel: Tutorial</span>
+            <span class="text-white-50 small font-monospace">Tablero 4x4</span>
+          </div>
+          
+          <div class="mock-shikaku-grid mb-3">
+            <!-- Row 1 -->
+            <div class="mock-row">
+              <div class="mock-cell cell-rect-1 border-top-left"><span>2</span></div>
+              <div class="mock-cell cell-rect-1 border-top-right"></div>
+              <div class="mock-cell cell-rect-2 border-top-left"><span>4</span></div>
+              <div class="mock-cell cell-rect-2 border-top-right"></div>
+            </div>
+            <!-- Row 2 -->
+            <div class="mock-row">
+              <div class="mock-cell cell-rect-3 border-left-top"><span>6</span></div>
+              <div class="mock-cell cell-rect-4 border-left-top"><span>4</span></div>
+              <div class="mock-cell cell-rect-2 border-bottom-left"></div>
+              <div class="mock-cell cell-rect-2 border-bottom-right"></div>
+            </div>
+            <!-- Row 3 -->
+            <div class="mock-row">
+              <div class="mock-cell cell-rect-3 border-left"></div>
+              <div class="mock-cell cell-rect-4 border-left-bottom"></div>
+              <div class="mock-cell cell-rect-5 border-top-left"><span>4</span></div>
+              <div class="mock-cell cell-rect-5 border-top-right"></div>
+            </div>
+            <!-- Row 4 -->
+            <div class="mock-row">
+              <div class="mock-cell cell-rect-3 border-left-bottom"></div>
+              <div class="mock-cell cell-rect-6 border-all"><span>1</span></div>
+              <div class="mock-cell cell-rect-5 border-bottom-left"></div>
+              <div class="mock-cell cell-rect-5 border-bottom-right"></div>
+            </div>
+          </div>
+          
+          <p class="text-white-50 mb-0 font-monospace small">
+            🎉 ¡Ejemplo resuelto exitosamente!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ¿Cómo Jugar? Section -->
+<section id="como-jugar" class="py-5 bg-light-section position-relative">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="section-title fw-bold text-dark-purple">¿Cómo se Juega a Shikaku?</h2>
+      <div class="title-underline mx-auto"></div>
+      <p class="text-muted mt-3 max-w-600 mx-auto">
+        Las reglas son simples, pero el desafío lógico puede ser verdaderamente enriquecedor. Aprende los fundamentos en segundos:
+      </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Rule 1 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="rule-card h-100 p-4 shadow-sm border-0 rounded-4 bg-white text-center transition-all">
+          <div class="rule-num-badge mb-3">1</div>
+          <h4 class="fw-bold text-dark-purple h5 mb-3">Rectángulos y Cuadrados</h4>
+          <p class="text-muted small mb-0">
+            Debes dividir la cuadrícula completa en piezas rectangulares o cuadradas trazando sus bordes.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Rule 2 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="rule-card h-100 p-4 shadow-sm border-0 rounded-4 bg-white text-center transition-all">
+          <div class="rule-num-badge mb-3">2</div>
+          <h4 class="fw-bold text-dark-purple h5 mb-3">Tamaño del Área</h4>
+          <p class="text-muted small mb-0">
+            Cada rectángulo debe contener exactamente un número. Este número indica la cantidad de celdas (área) que debe ocupar el rectángulo.
+          </p>
+        </div>
+      </div>
+
+      <!-- Rule 3 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="rule-card h-100 p-4 shadow-sm border-0 rounded-4 bg-white text-center transition-all">
+          <div class="rule-num-badge mb-3">3</div>
+          <h4 class="fw-bold text-dark-purple h5 mb-3">Un Solo Número</h4>
+          <p class="text-muted small mb-0">
+            Cada pieza que traces debe contener obligatoriamente un único número en su interior. No puede haber rectángulos vacíos ni con dos números.
+          </p>
+        </div>
+      </div>
+
+      <!-- Rule 4 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="rule-card h-100 p-4 shadow-sm border-0 rounded-4 bg-white text-center transition-all">
+          <div class="rule-num-badge mb-3">4</div>
+          <h4 class="fw-bold text-dark-purple h5 mb-3">Sin Superposiciones</h4>
+          <p class="text-muted small mb-0">
+            Los rectángulos no se pueden superponer entre sí y, al finalizar, todas las celdas del tablero deben estar cubiertas.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Características del Proyecto Section -->
+<section id="caracteristicas" class="py-5 bg-gradient-purple-dark text-white overflow-hidden">
+  <div class="container py-5 position-relative">
+    <div class="text-center mb-5">
+      <h2 class="section-title text-white fw-bold">Características Destacadas</h2>
+      <div class="title-underline bg-gold mx-auto"></div>
+      <p class="text-white-50 mt-3 max-w-600 mx-auto">
+        Nuestra plataforma de Shikaku cuenta con herramientas avanzadas diseñadas para brindarte la mejor experiencia de juego.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card p-4 rounded-4 shadow-sm h-100 transition-all border-blur">
+          <div class="feature-icon mb-3">⏱️</div>
+          <h4 class="fw-bold text-white mb-3">Temporizador Premium</h4>
+          <p class="text-white-50 small mb-0">
+            Lleva el registro exacto de cuánto tardas en resolver cada rompecabezas. Ideal para medir tu progreso y competir contra tus propios límites.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-4 rounded-4 shadow-sm h-100 transition-all border-blur">
+          <div class="feature-icon mb-3">💡</div>
+          <h4 class="fw-bold text-white mb-3">Resolución Inteligente</h4>
+          <p class="text-white-50 small mb-0">
+            ¿Te has quedado atascado en un tablero difícil? Utiliza nuestra función de autocompletado inteligente para ver la solución del puzzle al instante.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="feature-card p-4 rounded-4 shadow-sm h-100 transition-all border-blur">
+          <div class="feature-icon mb-3">👤</div>
+          <h4 class="fw-bold text-white mb-3">Registro de Usuarios</h4>
+          <p class="text-white-50 small mb-0">
+            Crea tu cuenta segura para guardar tu historial, almacenar tus tiempos récords y competir sanamente dentro del ecosistema de Shikaku.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer py-4 bg-dark text-white-50 text-center font-monospace border-top border-secondary">
+  <div class="container">
+    <p class="mb-0 small">
+      &copy; 2026 Shikaku Puzzle - Proyecto ADA. Todos los derechos reservados.
+    </p>
+  </div>
+</footer>
