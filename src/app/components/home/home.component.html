@@ -1,37 +1,5 @@
-<!-- Navbar Premium -->
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar shadow-sm sticky-top">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center gap-2 fw-bold logo-brand animate-fade-in" routerLink="/">
-      <span class="logo-icon">🔲</span>
-      <span class="logo-text font-monospace text-uppercase tracking-wider">Shikaku</span>
-    </a>
-    
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav align-items-center gap-3 mt-3 mt-lg-0">
-        <li class="nav-item">
-          <a class="nav-link text-white-50 hover-light px-3" href="#como-jugar">¿Cómo Jugar?</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white-50 hover-light px-3" href="#caracteristicas">Características</a>
-        </li>
-        <li class="nav-item ms-lg-3">
-          <a class="btn btn-outline-light btn-nav-login px-4 rounded-pill transition-all" routerLink="/login">
-            Iniciar Sesión
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-accent-purple px-4 rounded-pill transition-all text-white shadow-sm" routerLink="/registro">
-            Registrarse
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<!-- Navbar Componente Reutilizable -->
+<app-navbar></app-navbar>
 
 <!-- Hero Section -->
 <header class="hero-section py-5 d-flex align-items-center position-relative overflow-hidden">

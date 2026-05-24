@@ -1,35 +1,46 @@
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-  <div class="card shadow registro-card">
+<!-- Navbar Componente Reutilizable -->
+<app-navbar></app-navbar>
 
-    <div class="card-body p-4">
+<!-- Login Page con fondo oscuro del home -->
+<div class="auth-page-wrapper">
+  <!-- Background blobs -->
+  <div class="hero-bg-gradients">
+    <div class="gradient-sphere blob-1"></div>
+    <div class="gradient-sphere blob-2"></div>
+  </div>
 
-      <h2 class="text-center mb-4 titulo">
-        Iniciar Sesión
-      </h2>
+  <div class="auth-container position-relative z-index-1">
+    <div class="auth-card animate-slide-up shadow">
+
+      <div class="auth-card-header text-center mb-4">
+        <span class="logo-icon-lg">🔲</span>
+        <h2 class="text-white fw-bold mb-1 mt-2">Iniciar Sesión</h2>
+        <p class="text-white-50 small mb-0 font-monospace">Bienvenido de nuevo al puzzle</p>
+      </div>
 
       <form (ngSubmit)="iniciarSesion()" #loginForm="ngForm">
 
         <div class="mb-3">
-          <label class="form-label">Usuario</label>
-          <input 
+          <label class="form-label text-white-50 fw-bold small text-uppercase tracking-wide">Usuario</label>
+          <input
             type="text"
-            class="form-control"
+            class="form-control auth-input"
             [(ngModel)]="usuario"
             name="usuario"
             placeholder="Ingresa tu usuario"
             #usuarioModel="ngModel"
             required
           >
-          <div *ngIf="usuarioModel.invalid && usuarioModel.touched" class="text-danger small">
+          <div *ngIf="usuarioModel.invalid && usuarioModel.touched" class="text-warning small mt-1">
             El nombre de usuario es obligatorio.
           </div>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Contraseña</label>
-          <input 
+          <label class="form-label text-white-50 fw-bold small text-uppercase tracking-wide">Contraseña</label>
+          <input
             type="password"
-            class="form-control"
+            class="form-control auth-input"
             [(ngModel)]="password"
             name="password"
             placeholder="Ingresa tu contraseña"
@@ -37,18 +48,18 @@
             required
             minlength="6"
           >
-          <div *ngIf="passwordModel.invalid && passwordModel.touched" class="text-danger small">
+          <div *ngIf="passwordModel.invalid && passwordModel.touched" class="text-warning small mt-1">
             La contraseña debe tener al menos 6 caracteres.
           </div>
         </div>
 
-        <button class="btn btn-primary w-100 mt-3" type="submit" [disabled]="loginForm.invalid">
-          Entrar
+        <button class="btn-auth-primary w-100 mt-3" type="submit" [disabled]="loginForm.invalid">
+          🔓 Entrar
         </button>
 
-        <p class="text-center mt-3 small">
-          ¿No tienes cuenta? 
-          <a routerLink="/registro">Regístrate aquí</a>
+        <p class="text-center mt-4 text-white-50 small">
+          ¿No tienes cuenta?
+          <a class="text-accent-gold fw-bold" routerLink="/registro">Regístrate aquí</a>
         </p>
 
       </form>

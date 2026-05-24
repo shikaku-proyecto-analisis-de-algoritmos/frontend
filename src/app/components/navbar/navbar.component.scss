@@ -1,0 +1,74 @@
+// Variables & Colors (mismas del home para coherencia)
+$purple-primary: #6a1b9a;
+$purple-dark: #4a148c;
+$purple-deep-bg: #1a0826;
+$accent-gold: #ffd54f;
+$accent-teal: #00e5ff;
+
+// Custom Navigation Bar
+.custom-navbar {
+  background-color: $purple-dark;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.8rem 1rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  .logo-brand {
+    transition: transform 0.3s ease;
+    text-decoration: none;
+    .logo-icon {
+      font-size: 1.5rem;
+    }
+    .logo-text {
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: #fff;
+    }
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+    &:hover {
+      color: #fff !important;
+    }
+  }
+
+  .btn-nav-login {
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: #fff;
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-accent-purple {
+    background-color: $purple-primary;
+    border: none;
+    font-weight: bold;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    &:hover {
+      background-color: lighten($purple-primary, 8%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba($purple-primary, 0.4);
+    }
+  }
+}
+
+.transition-all {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

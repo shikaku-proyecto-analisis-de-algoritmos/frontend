@@ -1,31 +1,179 @@
-body {
-    background-color: #f5f5f5;
+// Variables del home
+$purple-primary: #6a1b9a;
+$purple-dark: #4a148c;
+$purple-deep-bg: #1a0826;
+$accent-gold: #ffd54f;
+$accent-teal: #00e5ff;
+
+// =============================================
+// Auth Page Wrapper - Fondo igual al home
+// =============================================
+.auth-page-wrapper {
+  min-height: calc(100vh - 64px);
+  background-color: $purple-deep-bg;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.registro-card {
+// Background Blobs
+.hero-bg-gradients {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+
+  .gradient-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.18;
+  }
+
+  .blob-1 {
     width: 400px;
-    border-radius: 15px;
-    border: none;
+    height: 400px;
+    background-color: $purple-primary;
+    top: -10%;
+    right: 10%;
+  }
+
+  .blob-2 {
+    width: 350px;
+    height: 350px;
+    background-color: $accent-teal;
+    bottom: -10%;
+    left: 5%;
+  }
 }
 
-.titulo {
-    color: #4a148c;
-    font-weight: bold;
+.z-index-1 {
+  position: relative;
+  z-index: 1;
 }
 
-.form-control {
-    border-radius: 10px;
-    padding: 10px;
+// =============================================
+// Auth Container & Card
+// =============================================
+.auth-container {
+  width: 100%;
+  max-width: 440px;
+  padding: 1.5rem;
 }
 
-.btn-primary {
-    background-color: #6a1b9a;
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    transition: 0.3s;
+.auth-card {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 }
 
-.btn-primary:hover {
-    background-color: #4a148c;
+.logo-icon-lg {
+  font-size: 2.5rem;
+  display: block;
+}
+
+// =============================================
+// Inputs
+// =============================================
+.auth-input {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  padding: 12px 16px !important;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.35) !important;
+  }
+
+  &:focus {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba($accent-teal, 0.6) !important;
+    box-shadow: 0 0 0 3px rgba($accent-teal, 0.1) !important;
+    outline: none;
+  }
+}
+
+.form-label {
+  letter-spacing: 0.08em;
+}
+
+// =============================================
+// Auth Primary Button
+// =============================================
+.btn-auth-primary {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, $purple-primary, $purple-dark);
+  color: white;
+  font-weight: 700;
+  padding: 13px 28px;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba($purple-primary, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, lighten($purple-primary, 8%), lighten($purple-dark, 8%));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba($purple-primary, 0.5);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba($purple-primary, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// =============================================
+// Accent gold link
+// =============================================
+.text-accent-gold {
+  color: $accent-gold !important;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: lighten($accent-gold, 10%) !important;
+    text-decoration: underline;
+  }
+}
+
+// =============================================
+// Animaciones
+// =============================================
+.animate-slide-up {
+  animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

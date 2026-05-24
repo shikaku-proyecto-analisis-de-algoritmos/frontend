@@ -7,10 +7,11 @@ import { GridComponent } from './components/grid/grid.component';
 import { ControlsComponent } from './components/controls/controls.component';
 import { VictoryComponent } from './components/victory/victory.component';
 import { HttpClientModule } from '@angular/common/http';
-import { SignInComponent } from './components/sign-in/sign-in.component'; // ← agrega este import
+import { SignInComponent } from './components/sign-in/sign-in.component';
 import { FormsModule } from '@angular/forms';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HomeComponent } from './components/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { HomeComponent } from './components/home/home.component';
     VictoryComponent,
     SignInComponent,
     LogInComponent,
-    HomeComponent
+    HomeComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
