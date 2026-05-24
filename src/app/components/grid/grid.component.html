@@ -1,4 +1,19 @@
-<div class="grid-wrapper">
+<div class="grid-wrapper py-4">
+  <!-- Tarjeta del temporizador premium -->
+  <div class="timer-container shadow-sm mb-4">
+    <div class="d-flex align-items-center justify-content-center gap-3 py-2 px-4 rounded-pill bg-white border">
+      <span class="timer-icon">⏱️</span>
+      <div class="d-flex flex-column align-items-start">
+        <span class="timer-label text-uppercase text-muted fw-bold">Tiempo</span>
+        <span class="timer-value fw-bold text-primary font-monospace">{{ formattedTime }}</span>
+      </div>
+      <div class="divider mx-2"></div>
+      <button class="btn btn-sm btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center" (click)="reset()" title="Reiniciar juego">
+        🔄
+      </button>
+    </div>
+  </div>
+
   <div
     class="grid"
     *ngIf="board"

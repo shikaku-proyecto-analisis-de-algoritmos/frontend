@@ -5,6 +5,66 @@
     gap: 16px;
   }
 
+  .timer-container {
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .timer-icon {
+    font-size: 1.5rem;
+    animation: rotatePulse 2s infinite ease-in-out;
+  }
+
+  .timer-label {
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+  }
+
+  .timer-value {
+    font-size: 1.4rem;
+    line-height: 1.2;
+    min-width: 75px;
+    letter-spacing: 0.5px;
+  }
+
+  .divider {
+    width: 1px;
+    height: 30px;
+    background-color: #dee2e6;
+  }
+
+  .btn-outline-secondary {
+    border-color: #dee2e6;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      background-color: #f8f9fa;
+      border-color: #adb5bd;
+      transform: rotate(45deg) !important;
+    }
+  }
+
+  @keyframes rotatePulse {
+    0% {
+      transform: scale(1) rotate(0deg);
+    }
+    25% {
+      transform: scale(1.1) rotate(3deg);
+    }
+    50% {
+      transform: scale(1) rotate(0deg);
+    }
+    75% {
+      transform: scale(1.1) rotate(-3deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
   .grid {
     display: inline-block;
     border: 2px solid #333;
