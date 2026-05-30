@@ -13,6 +13,10 @@ export class ShikakuService {
     return this.http.get(`${this.api}/board?difficulty=${difficulty}`);
   }
 
+  getGameLevel(id: number): Observable<any> {
+    return this.http.get(`${this.api}/game/level/${id}`);
+  }
+
   solve(board: Board): Observable<any> {
     return this.http.post(`${this.api}/solve`, { board });
   }

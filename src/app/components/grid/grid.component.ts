@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ShikakuService } from 'src/app/services/shikaku.service';
+import { ShikakuSolverService, SolveResult } from 'src/app/services/shikaku-solver.service';
 import { Board, Rectangle } from '../../models/shikaku.model';
 
 @Component({
@@ -10,9 +11,9 @@ import { Board, Rectangle } from '../../models/shikaku.model';
 export class GridComponent implements OnInit, OnDestroy {
   board: Board | null = null;
   rectangles: Rectangle[] = [];
-  currentRect: Partial<Rectangle> | null = null; // rectángulo que el usuario está dibujando
-  previewRect: Rectangle | null = null; // ← NUEVO
-  isDrawing = false;                     // ← NUEVO
+  currentRect: Partial<Rectangle> | null = null;
+  previewRect: Rectangle | null = null;
+  isDrawing = false;
 
   // --- Propiedades del Temporizador ---
   timeElapsed = 0;
@@ -20,21 +21,40 @@ export class GridComponent implements OnInit, OnDestroy {
   formattedTime = '00:00';
   timerRunning = false;
 
-  constructor(private shikakuService: ShikakuService) {}
+  // --- Propiedades del Solucionador ---
+  solverType: 'bt' | 'cp' = 'cp';
+  solverMode: 'local' | 'remote' = 'local';
+  isSolving = false;
+  solveStats: SolveResult | null = null;
+  showStats = false;
+  isAnimating = false;
+
+  constructor(
+    private shikakuService: ShikakuService,
+    private solverService: ShikakuSolverService
+  ) {}
+
+  // --- Propiedades de Nivel ---
+  currentLevelId = 1;
 
   ngOnInit(): void {
-    this.board = {
-      rows: 5,
-      cols: 5,
-      cells: [
-        [0, 0, 2, 0, 0],
-        [0, 0, 0, 0, 3],
-        [4, 0, 0, 0, 0],
-        [0, 0, 0, 2, 0],
-        [0, 0, 4, 0, 0],
-      ]
-    };
-    this.startTimer();
+    this.loadLevel(this.currentLevelId);
+  }
+
+  loadLevel(id: number): void {
+    this.shikakuService.getGameLevel(id).subscribe(data => {
+      this.board = data.cells ? data : data.board;
+      this.rectangles = [];
+      this.solveStats = null;
+      this.showStats = false;
+      this.resetTimer();
+      this.startTimer();
+    });
+  }
+
+  nextLevel(): void {
+    this.currentLevelId++;
+    this.loadLevel(this.currentLevelId);
   }
 
   ngOnDestroy(): void {
@@ -86,13 +106,16 @@ export class GridComponent implements OnInit, OnDestroy {
     this.shikakuService.getBoard(difficulty).subscribe(data => {
       this.board = data.board;
       this.rectangles = [];
+      this.solveStats = null;
+      this.showStats = false;
       this.resetTimer();
       this.startTimer();
     });
   }
 
   onCellMouseDown(row: number, col: number): void {
-    this.isDrawing = true; // ← faltaba esto
+    if (this.isAnimating) return;
+    this.isDrawing = true;
     this.currentRect = { startRow: row, startCol: col };
     this.previewRect = { startRow: row, startCol: col, endRow: row, endCol: col };
   }
@@ -100,7 +123,6 @@ export class GridComponent implements OnInit, OnDestroy {
   onCellMouseMove(row: number, col: number): void {
     if (!this.isDrawing || !this.currentRect) return;
 
-    // ← NUEVO: actualizar preview en tiempo real
     this.previewRect = {
       startRow: Math.min(this.currentRect.startRow!, row),
       startCol: Math.min(this.currentRect.startCol!, col),
@@ -122,7 +144,6 @@ export class GridComponent implements OnInit, OnDestroy {
     this.rectangles = this.rectangles.filter(r => !this.overlaps(r, rect));
     this.rectangles.push(rect);
 
-    // ← eliminar el bloque duplicado que tenías antes
     this.currentRect = null;
     this.previewRect = null;
     this.isDrawing = false;
@@ -130,7 +151,6 @@ export class GridComponent implements OnInit, OnDestroy {
   }
 
   onMouseLeave(): void {
-    // ← NUEVO: cancelar si el mouse sale del grid
     if (this.isDrawing) {
       this.currentRect = null;
       this.previewRect = null;
@@ -153,19 +173,102 @@ export class GridComponent implements OnInit, OnDestroy {
     );
   }
 
+  // ─────────────────────────────────────────────────
+  //  Resolver — local (frontend) o remoto (backend)
+  // ─────────────────────────────────────────────────
   solve(): void {
+    if (!this.board || this.isSolving) return;
+
+    if (this.solverMode === 'local') {
+      this.solveLocal();
+    } else {
+      this.solveRemote();
+    }
+  }
+
+  private solveLocal(): void {
     if (!this.board) return;
+    this.isSolving = true;
+    this.solveStats = null;
+    this.showStats = false;
+
+    // Ejecutar en el siguiente tick para no bloquear la UI
+    setTimeout(() => {
+      const result = this.solverType === 'bt'
+        ? this.solverService.solveBacktracking(this.board!)
+        : this.solverService.solveBacktrackingCP(this.board!);
+
+      this.solveStats = result;
+      this.showStats = true;
+
+      if (result.solution.length > 0) {
+        this.animateSolution(result.solution);
+      } else {
+        this.isSolving = false;
+      }
+    }, 50);
+  }
+
+  private solveRemote(): void {
+    if (!this.board) return;
+    this.isSolving = true;
+    this.solveStats = null;
+    this.showStats = false;
+
     this.shikakuService.solve(this.board).subscribe({
       next: (data) => {
-        this.rectangles = data.solution;
-        this.stopTimer(); // Detener el temporizador ya que se resolvió automáticamente
+        this.solveStats = {
+          solution: data.solution,
+          timeMs: 0,
+          nodesExplored: 0,
+          solverType: this.solverType
+        };
+        this.showStats = true;
+        this.animateSolution(data.solution);
       },
-      error: (err) => console.error('Error al resolver el puzzle', err)
+      error: (err) => {
+        console.error('Error al resolver el puzzle', err);
+        this.isSolving = false;
+      }
     });
+  }
+
+  private animateSolution(solution: Rectangle[]): void {
+    this.rectangles = [];
+    this.isAnimating = true;
+
+    let idx = 0;
+    const interval = setInterval(() => {
+      if (idx < solution.length) {
+        this.rectangles = [...this.rectangles, solution[idx]];
+        idx++;
+      } else {
+        clearInterval(interval);
+        this.stopTimer();
+        this.isSolving = false;
+        this.isAnimating = false;
+      }
+    }, 180);
+  }
+
+  setSolverType(type: 'bt' | 'cp'): void {
+    this.solverType = type;
+  }
+
+  setSolverMode(mode: 'local' | 'remote'): void {
+    this.solverMode = mode;
+  }
+
+  dismissStats(): void {
+    this.showStats = false;
   }
 
   reset(): void {
     this.rectangles = [];
+    this.solveStats = null;
+    this.showStats = false;
+    this.isAnimating = false;
+    this.isSolving = false;
     this.resetTimer();
     this.startTimer();
   }
@@ -173,17 +276,12 @@ export class GridComponent implements OnInit, OnDestroy {
   checkVictory(): void {
     if (!this.board || this.rectangles.length === 0) return;
 
-    this.shikakuService.validate(this.board, this.rectangles).subscribe({
-      next: (data) => {
-        if (data.valid) {
-          this.stopTimer(); // Detener el temporizador al ganar
-          alert(`¡Ganaste! Tiempo total: ${this.formattedTime}`);
-          // Aquí podrías llamar a un método para guardar el récord en la BD
-          // this.saveGameRecord(); 
-        }
-      },
-      error: (err) => console.error('Error en la validación', err)
-    });
+    // Validación local
+    const isValid = this.solverService.validateSolution(this.board, this.rectangles);
+    if (isValid) {
+      this.stopTimer();
+      alert(`¡Ganaste! 🎉 Tiempo total: ${this.formattedTime}`);
+    }
   }
 
   getCellClasses(r: number, c: number): { [key: string]: boolean } {
@@ -220,11 +318,10 @@ export class GridComponent implements OnInit, OnDestroy {
   getRectColor(row: number, col: number): string {
     // Primero mostrar preview (encima de todo)
     if (this.previewRect && this.inRect(row, col, this.previewRect)) {
-      // Mismo color que tendrá cuando se suelte
       const futureIndex = this.rectangles.filter(
         r => !this.overlaps(r, this.previewRect!)
       ).length;
-      return this.getColor(futureIndex) + 'CC'; // ← opacidad 80% para distinguir preview
+      return this.getColor(futureIndex) + 'CC';
     }
 
     // Rectángulos ya confirmados
