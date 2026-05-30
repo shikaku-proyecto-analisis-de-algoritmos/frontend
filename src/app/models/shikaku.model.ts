@@ -10,3 +10,10 @@ export interface Rectangle {
   endRow: number;
   endCol: number;
 }
+
+export interface SolveResult {
+  solution: Rectangle[];
+  timeMs: number;
+  nodesExplored: number;
+  solverType: 'bt' | 'cp';
+}

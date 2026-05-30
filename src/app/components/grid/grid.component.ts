@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ShikakuService } from 'src/app/services/shikaku.service';
-import { ShikakuSolverService, SolveResult } from 'src/app/services/shikaku-solver.service';
-import { Board, Rectangle } from '../../models/shikaku.model';
+import { Board, Rectangle, SolveResult } from '../../models/shikaku.model';
 
 @Component({
   selector: 'app-grid',
@@ -23,38 +22,28 @@ export class GridComponent implements OnInit, OnDestroy {
 
   // --- Propiedades del Solucionador ---
   solverType: 'bt' | 'cp' = 'cp';
-  solverMode: 'local' | 'remote' = 'local';
   isSolving = false;
   solveStats: SolveResult | null = null;
   showStats = false;
   isAnimating = false;
 
   constructor(
-    private shikakuService: ShikakuService,
-    private solverService: ShikakuSolverService
+    private shikakuService: ShikakuService
   ) {}
 
-  // --- Propiedades de Nivel ---
-  currentLevelId = 1;
-
   ngOnInit(): void {
-    this.loadLevel(this.currentLevelId);
-  }
-
-  loadLevel(id: number): void {
-    this.shikakuService.getGameLevel(id).subscribe(data => {
-      this.board = data.cells ? data : data.board;
-      this.rectangles = [];
-      this.solveStats = null;
-      this.showStats = false;
-      this.resetTimer();
-      this.startTimer();
-    });
-  }
-
-  nextLevel(): void {
-    this.currentLevelId++;
-    this.loadLevel(this.currentLevelId);
+    this.board = {
+      rows: 5,
+      cols: 5,
+      cells: [
+        [0, 0, 2, 0, 0],
+        [0, 0, 0, 0, 3],
+        [4, 0, 0, 0, 0],
+        [0, 0, 0, 2, 0],
+        [0, 0, 4, 0, 0],
+      ]
+    };
+    this.startTimer();
   }
 
   ngOnDestroy(): void {
@@ -111,6 +100,11 @@ export class GridComponent implements OnInit, OnDestroy {
       this.resetTimer();
       this.startTimer();
     });
+  }
+
+  nextLevel(): void {
+    // Carga un nuevo tablero aleatorio (por defecto 'easy')
+    this.loadBoard('easy');
   }
 
   onCellMouseDown(row: number, col: number): void {
@@ -178,44 +172,11 @@ export class GridComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────
   solve(): void {
     if (!this.board || this.isSolving) return;
-
-    if (this.solverMode === 'local') {
-      this.solveLocal();
-    } else {
-      this.solveRemote();
-    }
-  }
-
-  private solveLocal(): void {
-    if (!this.board) return;
     this.isSolving = true;
     this.solveStats = null;
     this.showStats = false;
 
-    // Ejecutar en el siguiente tick para no bloquear la UI
-    setTimeout(() => {
-      const result = this.solverType === 'bt'
-        ? this.solverService.solveBacktracking(this.board!)
-        : this.solverService.solveBacktrackingCP(this.board!);
-
-      this.solveStats = result;
-      this.showStats = true;
-
-      if (result.solution.length > 0) {
-        this.animateSolution(result.solution);
-      } else {
-        this.isSolving = false;
-      }
-    }, 50);
-  }
-
-  private solveRemote(): void {
-    if (!this.board) return;
-    this.isSolving = true;
-    this.solveStats = null;
-    this.showStats = false;
-
-    this.shikakuService.solve(this.board).subscribe({
+    this.shikakuService.solve(this.board, this.solverType).subscribe({
       next: (data) => {
         this.solveStats = {
           solution: data.solution,
@@ -255,10 +216,6 @@ export class GridComponent implements OnInit, OnDestroy {
     this.solverType = type;
   }
 
-  setSolverMode(mode: 'local' | 'remote'): void {
-    this.solverMode = mode;
-  }
-
   dismissStats(): void {
     this.showStats = false;
   }
@@ -276,12 +233,15 @@ export class GridComponent implements OnInit, OnDestroy {
   checkVictory(): void {
     if (!this.board || this.rectangles.length === 0) return;
 
-    // Validación local
-    const isValid = this.solverService.validateSolution(this.board, this.rectangles);
-    if (isValid) {
-      this.stopTimer();
-      alert(`¡Ganaste! 🎉 Tiempo total: ${this.formattedTime}`);
-    }
+    // Validación remota (Backend)
+    this.shikakuService.validate(this.board, this.rectangles).subscribe({
+      next: (data) => {
+        if (data.valid) {
+          this.stopTimer();
+          alert(`¡Ganaste! 🎉 Tiempo total: ${this.formattedTime}`);
+        }
+      }
+    });
   }
 
   getCellClasses(r: number, c: number): { [key: string]: boolean } {

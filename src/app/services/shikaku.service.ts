@@ -17,8 +17,8 @@ export class ShikakuService {
     return this.http.get(`${this.api}/game/level/${id}`);
   }
 
-  solve(board: Board): Observable<any> {
-    return this.http.post(`${this.api}/solve`, { board });
+  solve(board: Board, solverType: 'bt' | 'cp'): Observable<any> {
+    return this.http.post(`${this.api}/solve`, { board, solver_type: solverType });
   }
 
   validate(board: Board, rectangles: Rectangle[]): Observable<any> {
