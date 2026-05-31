@@ -61,13 +61,48 @@
       </div>
 
       <!-- Botones de Acción -->
+      <div class="game-feedback victory-panel mt-4" *ngIf="validationStatus === 'success'">
+        <h3 class="feedback-title">&#127881; Puzzle completado!</h3>
+        <p class="feedback-line">Tiempo total: <strong>{{ formattedTime }}</strong></p>
+        <p class="feedback-line">Nivel: <strong>{{ currentLevel }}</strong></p>
+        <button class="btn-next d-inline-flex align-items-center gap-2 mt-2" (click)="nextLevel()">
+          <span class="btn-text">Siguiente Nivel</span>
+        </button>
+      </div>
+
+      <div class="game-feedback error-panel mt-4" *ngIf="validationStatus === 'error'">
+        <p class="feedback-line mb-0">{{ validationMessage }}</p>
+      </div>
+
+      <div class="game-feedback hint-panel mt-4" *ngIf="hintMessage">
+        <p class="feedback-line mb-0">{{ hintMessage }}</p>
+      </div>
+
+      <div class="solver-selector mt-4" *ngIf="showSolverSelector">
+        <h3 class="solver-title">Selecciona el solucionador</h3>
+
+        <label class="solver-option">
+          <input type="radio" name="solverType" [checked]="solverType === 'bt'" (change)="setSolverType('bt')" />
+          <span>Backtracking</span>
+        </label>
+
+        <label class="solver-option">
+          <input type="radio" name="solverType" [checked]="solverType === 'cp'" (change)="setSolverType('cp')" />
+          <span>Backtracking + Constraint Propagation</span>
+        </label>
+
+        <button class="btn-solve d-inline-flex align-items-center gap-2 mt-3" (click)="solve()" [disabled]="isSolving">
+          <span class="btn-text">Resolver</span>
+        </button>
+      </div>
+
       <div class="action-buttons-container mt-4 d-flex gap-3 justify-content-center flex-wrap">
         <button class="btn-verify d-flex align-items-center gap-2" (click)="checkVictory()">
           <span class="btn-icon">✔️</span>
           <span class="btn-text">Verificar Respuesta</span>
         </button>
 
-        <button class="btn-solve d-flex align-items-center gap-2" (click)="solve()">
+        <button class="btn-solve d-flex align-items-center gap-2" (click)="openSolverSelector()">
           <span class="btn-icon">💡</span>
           <span class="btn-text">Resolver Puzzle</span>
         </button>

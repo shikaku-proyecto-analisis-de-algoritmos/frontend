@@ -334,6 +334,80 @@ $accent-teal: #00e5ff;
 // =============================================
 // Animaciones (idénticas al home)
 // =============================================
+.game-feedback,
+.solver-selector {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  color: white;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+}
+
+.victory-panel {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(16, 185, 129, 0.16);
+}
+
+.error-panel {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(127, 29, 29, 0.3);
+}
+
+.hint-panel {
+  border-color: rgba($accent-gold, 0.5);
+  background: rgba($accent-gold, 0.12);
+}
+
+.feedback-title,
+.solver-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.feedback-line {
+  color: rgba(255, 255, 255, 0.86);
+  margin-bottom: 0.4rem;
+}
+
+.solver-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.solver-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  input {
+    accent-color: $accent-gold;
+  }
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none !important;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.8s ease-out forwards;
 }

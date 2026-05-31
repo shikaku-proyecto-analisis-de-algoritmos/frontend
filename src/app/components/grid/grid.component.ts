@@ -28,6 +28,10 @@ export class GridComponent implements OnInit, OnDestroy {
   isAnimating = false;
   currentLevel = 1;
   currentDifficulty: Difficulty = 'easy';
+  showSolverSelector = false;
+  validationStatus: 'success' | 'error' | null = null;
+  validationMessage = '';
+  hintMessage = '';
 
   constructor(
     private shikakuService: ShikakuService
@@ -90,6 +94,10 @@ export class GridComponent implements OnInit, OnDestroy {
       this.previewRect = null;
       this.solveStats = null;
       this.showStats = false;
+      this.showSolverSelector = false;
+      this.validationStatus = null;
+      this.validationMessage = '';
+      this.hintMessage = '';
       this.resetTimer();
       this.startTimer();
     });
@@ -140,7 +148,8 @@ export class GridComponent implements OnInit, OnDestroy {
     this.currentRect = null;
     this.previewRect = null;
     this.isDrawing = false;
-    this.checkVictory();
+    this.validationStatus = null;
+    this.validationMessage = '';
   }
 
   onMouseLeave(): void {
@@ -169,11 +178,21 @@ export class GridComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────
   //  Resolver via backend
   // ─────────────────────────────────────────────────
+  openSolverSelector(): void {
+    if (!this.board || this.isSolving) return;
+    this.showSolverSelector = true;
+    this.validationStatus = null;
+    this.validationMessage = '';
+  }
+
   solve(): void {
     if (!this.board || this.isSolving) return;
     this.isSolving = true;
     this.solveStats = null;
     this.showStats = false;
+    this.showSolverSelector = false;
+    this.validationStatus = null;
+    this.validationMessage = '';
 
     this.shikakuService.solve(this.board, this.solverType).subscribe({
       next: (data) => {
@@ -189,6 +208,8 @@ export class GridComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error al resolver el puzzle', err);
         this.isSolving = false;
+        this.validationStatus = 'error';
+        this.validationMessage = 'No se pudo resolver el puzzle. Intenta nuevamente.';
       }
     });
   }
@@ -223,21 +244,38 @@ export class GridComponent implements OnInit, OnDestroy {
     this.rectangles = [];
     this.solveStats = null;
     this.showStats = false;
+    this.showSolverSelector = false;
     this.isAnimating = false;
     this.isSolving = false;
+    this.validationStatus = null;
+    this.validationMessage = '';
+    this.hintMessage = '';
     this.resetTimer();
     this.startTimer();
   }
 
   checkVictory(): void {
-    if (!this.board || this.rectangles.length === 0) return;
+    if (!this.board || this.rectangles.length === 0) {
+      this.validationStatus = 'error';
+      this.validationMessage = 'Dibuja al menos un rectangulo antes de verificar.';
+      return;
+    }
 
     this.shikakuService.validate(this.board, this.rectangles).subscribe({
       next: (data) => {
         if (data.valid) {
           this.stopTimer();
-          alert(`¡Ganaste! 🎉 Tiempo total: ${this.formattedTime}`);
+          this.validationStatus = 'success';
+          this.validationMessage = 'Puzzle completado';
+        } else {
+          this.validationStatus = 'error';
+          this.validationMessage = 'La solucion aun no es correcta. Revisa tus rectangulos.';
         }
+      },
+      error: (err) => {
+        console.error('Error al validar el puzzle', err);
+        this.validationStatus = 'error';
+        this.validationMessage = 'No se pudo validar la solucion. Intenta nuevamente.';
       }
     });
   }
@@ -248,12 +286,11 @@ export class GridComponent implements OnInit, OnDestroy {
     this.shikakuService.hint(this.board, this.rectangles).subscribe({
       next: (data: HintResult) => {
         this.previewRect = data.hintRect;
-        if (data.message) {
-          alert(data.message);
-        }
+        this.hintMessage = data.message;
       },
       error: (err) => {
         console.error('Error al obtener pista', err);
+        this.hintMessage = 'No se pudo obtener una pista. Intenta nuevamente.';
       }
     });
   }
