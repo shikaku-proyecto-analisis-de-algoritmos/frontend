@@ -11,9 +11,21 @@ export interface Rectangle {
   endCol: number;
 }
 
+export type SolverType = 'bt' | 'cp';
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
 export interface SolveResult {
   solution: Rectangle[];
   timeMs: number;
   nodesExplored: number;
-  solverType: 'bt' | 'cp';
+  solverType: SolverType;
+}
+
+export interface HintResult {
+  hintRect: Rectangle | null;
+  clueRow?: number;
+  clueCol?: number;
+  clueValue?: number;
+  message: string;
+  forced?: boolean;
 }

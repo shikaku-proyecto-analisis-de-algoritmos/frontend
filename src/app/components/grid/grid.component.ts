@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ShikakuService } from 'src/app/services/shikaku.service';
-import { Board, Rectangle, SolveResult } from '../../models/shikaku.model';
+import { Board, Difficulty, HintResult, Rectangle, SolveResult, SolverType } from '../../models/shikaku.model';
 
 @Component({
   selector: 'app-grid',
@@ -21,29 +21,20 @@ export class GridComponent implements OnInit, OnDestroy {
   timerRunning = false;
 
   // --- Propiedades del Solucionador ---
-  solverType: 'bt' | 'cp' = 'cp';
+  solverType: SolverType = 'cp';
   isSolving = false;
   solveStats: SolveResult | null = null;
   showStats = false;
   isAnimating = false;
+  currentLevel = 1;
+  currentDifficulty: Difficulty = 'easy';
 
   constructor(
     private shikakuService: ShikakuService
   ) {}
 
   ngOnInit(): void {
-    this.board = {
-      rows: 5,
-      cols: 5,
-      cells: [
-        [0, 0, 2, 0, 0],
-        [0, 0, 0, 0, 3],
-        [4, 0, 0, 0, 0],
-        [0, 0, 0, 2, 0],
-        [0, 0, 4, 0, 0],
-      ]
-    };
-    this.startTimer();
+    this.loadBoard(this.currentDifficulty);
   }
 
   ngOnDestroy(): void {
@@ -91,10 +82,12 @@ export class GridComponent implements OnInit, OnDestroy {
     return this.colors[index % this.colors.length];
   }
 
-  loadBoard(difficulty: string): void {
+  loadBoard(difficulty: Difficulty): void {
+    this.currentDifficulty = difficulty;
     this.shikakuService.getBoard(difficulty).subscribe(data => {
       this.board = data.board;
       this.rectangles = [];
+      this.previewRect = null;
       this.solveStats = null;
       this.showStats = false;
       this.resetTimer();
@@ -103,8 +96,14 @@ export class GridComponent implements OnInit, OnDestroy {
   }
 
   nextLevel(): void {
-    // Carga un nuevo tablero aleatorio (por defecto 'easy')
-    this.loadBoard('easy');
+    this.currentLevel++;
+    this.loadBoard(this.getDifficultyForLevel(this.currentLevel));
+  }
+
+  private getDifficultyForLevel(level: number): Difficulty {
+    if (level <= 3) return 'easy';
+    if (level <= 6) return 'medium';
+    return 'hard';
   }
 
   onCellMouseDown(row: number, col: number): void {
@@ -168,7 +167,7 @@ export class GridComponent implements OnInit, OnDestroy {
   }
 
   // ─────────────────────────────────────────────────
-  //  Resolver — local (frontend) o remoto (backend)
+  //  Resolver via backend
   // ─────────────────────────────────────────────────
   solve(): void {
     if (!this.board || this.isSolving) return;
@@ -212,7 +211,7 @@ export class GridComponent implements OnInit, OnDestroy {
     }, 180);
   }
 
-  setSolverType(type: 'bt' | 'cp'): void {
+  setSolverType(type: SolverType): void {
     this.solverType = type;
   }
 
@@ -233,13 +232,28 @@ export class GridComponent implements OnInit, OnDestroy {
   checkVictory(): void {
     if (!this.board || this.rectangles.length === 0) return;
 
-    // Validación remota (Backend)
     this.shikakuService.validate(this.board, this.rectangles).subscribe({
       next: (data) => {
         if (data.valid) {
           this.stopTimer();
           alert(`¡Ganaste! 🎉 Tiempo total: ${this.formattedTime}`);
         }
+      }
+    });
+  }
+
+  getHint(): void {
+    if (!this.board) return;
+
+    this.shikakuService.hint(this.board, this.rectangles).subscribe({
+      next: (data: HintResult) => {
+        this.previewRect = data.hintRect;
+        if (data.message) {
+          alert(data.message);
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener pista', err);
       }
     });
   }
