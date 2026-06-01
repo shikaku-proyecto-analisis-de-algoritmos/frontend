@@ -19,6 +19,8 @@
       </div>
 
       <form (ngSubmit)="iniciarSesion()" #loginForm="ngForm">
+        <div *ngIf="successMessage" class="alert-success mb-3">{{ successMessage }}</div>
+        <div *ngIf="errorMessage" class="alert-error mb-3">{{ errorMessage }}</div>
 
         <div class="mb-3">
           <label class="form-label text-white-50 fw-bold small text-uppercase tracking-wide">Usuario</label>
@@ -53,9 +55,15 @@
           </div>
         </div>
 
-        <button class="btn-auth-primary w-100 mt-3" type="submit" [disabled]="loginForm.invalid">
-          🔓 Entrar
+        <button class="btn-auth-primary w-100 mt-3" type="submit" [disabled]="loginForm.invalid || isLoadingGoogle">
+          Iniciar Sesion
         </button>
+
+        <div class="auth-divider">
+          <span>o</span>
+        </div>
+
+        <div class="google-button-wrapper" #googleLoginBtn></div>
 
         <p class="text-center mt-4 text-white-50 small">
           ¿No tienes cuenta?

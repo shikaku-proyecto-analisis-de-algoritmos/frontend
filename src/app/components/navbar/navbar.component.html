@@ -30,7 +30,10 @@
         </li>
         <li class="nav-item d-flex align-items-center gap-2" *ngIf="username">
           <a class="profile-pill" routerLink="/perfil" title="Ver perfil">
-            <span class="profile-avatar">{{ username.charAt(0).toUpperCase() }}</span>
+            <img *ngIf="avatarUrl; else initialsAvatar" class="profile-avatar" [src]="avatarUrl" alt="Avatar">
+            <ng-template #initialsAvatar>
+              <span class="profile-avatar">{{ username.charAt(0).toUpperCase() }}</span>
+            </ng-template>
             <span>{{ username }}</span>
           </a>
           <button class="btn-logout" type="button" (click)="logout()">Salir</button>

@@ -146,6 +146,53 @@ $accent-teal: #00e5ff;
   }
 }
 
+.alert-success,
+.alert-error {
+  border-radius: 12px;
+  padding: 0.75rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+}
+
+.alert-success {
+  background: rgba(23, 201, 100, 0.18);
+  color: #9af0be;
+  border-color: rgba(23, 201, 100, 0.4);
+}
+
+.alert-error {
+  background: rgba(255, 77, 109, 0.18);
+  color: #ff9ab1;
+  border-color: rgba(255, 77, 109, 0.4);
+}
+
+.auth-divider {
+  margin: 1.1rem 0 0.9rem;
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-transform: lowercase;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  span {
+    margin: 0 0.8rem;
+  }
+}
+
+.google-button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 // =============================================
 // Accent gold link
 // =============================================

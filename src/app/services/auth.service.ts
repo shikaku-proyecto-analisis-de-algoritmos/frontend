@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { LoginRequest, RegisterRequest, TokenResponse } from '../models/auth.model';
+import { AuthUser, GoogleAuthRequest, LoginRequest, RegisterRequest, TokenResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,8 @@ export class AuthService {
   private api = 'http://localhost:8000';
   private tokenKey = 'shikaku.token';
   private usernameKey = 'shikaku.username';
-  private authState = new BehaviorSubject<string | null>(this.getUsername());
+  private avatarKey = 'shikaku.avatar_url';
+  private authState = new BehaviorSubject<AuthUser>(this.getUser());
   user$ = this.authState.asObservable();
 
   constructor(private http: HttpClient) { }
@@ -25,10 +26,17 @@ export class AuthService {
     );
   }
 
+  loginWithGoogle(payload: GoogleAuthRequest): Observable<TokenResponse> {
+    return this.http.post<TokenResponse>(`${this.api}/auth/google`, payload).pipe(
+      tap(response => this.setSession(response))
+    );
+  }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.usernameKey);
-    this.authState.next(null);
+    localStorage.removeItem(this.avatarKey);
+    this.authState.next({ username: null, avatarUrl: null });
   }
 
   getToken(): string | null {
@@ -37,6 +45,17 @@ export class AuthService {
 
   getUsername(): string | null {
     return localStorage.getItem(this.usernameKey);
+  }
+
+  getAvatarUrl(): string | null {
+    return localStorage.getItem(this.avatarKey);
+  }
+
+  getUser(): AuthUser {
+    return {
+      username: this.getUsername(),
+      avatarUrl: this.getAvatarUrl()
+    };
   }
 
   isAuthenticated(): boolean {
@@ -65,6 +84,14 @@ export class AuthService {
     if (response.username) {
       localStorage.setItem(this.usernameKey, response.username);
     }
-    this.authState.next(response.username || this.getUsername());
+    if (response.avatar_url) {
+      localStorage.setItem(this.avatarKey, response.avatar_url);
+    } else {
+      localStorage.removeItem(this.avatarKey);
+    }
+    this.authState.next({
+      username: response.username || this.getUsername(),
+      avatarUrl: response.avatar_url || this.getAvatarUrl()
+    });
   }
 }

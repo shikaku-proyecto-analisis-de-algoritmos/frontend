@@ -85,6 +85,7 @@ $accent-teal: #00e5ff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    object-fit: cover;
     background: linear-gradient(135deg, $accent-gold, #ffb300);
     color: $purple-deep-bg;
     font-weight: 900;

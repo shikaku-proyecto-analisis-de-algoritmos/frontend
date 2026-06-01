@@ -11,14 +11,16 @@ import { AuthService } from '../../services/auth.service';
 export class NavbarComponent {
   showInfoLinks = true;
   username: string | null = null;
+  avatarUrl: string | null = null;
 
   constructor(
     private router: Router,
     private authService: AuthService
   ) {
     this.showInfoLinks = this.isLandingRoute(this.router.url);
-    this.authService.user$.subscribe(username => {
-      this.username = username;
+    this.authService.user$.subscribe(user => {
+      this.username = user.username;
+      this.avatarUrl = user.avatarUrl;
     });
 
     this.router.events
