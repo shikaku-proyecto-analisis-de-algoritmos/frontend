@@ -14,6 +14,12 @@ export interface Rectangle {
 export type SolverType = 'bt' | 'cp';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+export interface LeaderboardEntry {
+  rank: number;
+  username: string;
+  score: number;
+}
+
 export interface SolveResult {
   solution: Rectangle[];
   timeMs: number;

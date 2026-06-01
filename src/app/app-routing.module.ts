@@ -7,6 +7,7 @@ import { LogInComponent } from './components/log-in/log-in.component';
 import { HomeComponent } from './components/home/home.component';
 import { NewGameComponent } from './components/new-game/new-game.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 
 const routes: Routes = [
 
@@ -29,6 +30,10 @@ const routes: Routes = [
   {
     path: 'perfil',
     component: ProfileComponent
+  },
+  {
+    path: 'leaderboard',
+    component: LeaderboardComponent
   },
   {
     path: 'login', // Nueva ruta para el componente de inicio de sesión

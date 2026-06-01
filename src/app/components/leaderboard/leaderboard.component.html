@@ -1,0 +1,51 @@
+<app-navbar></app-navbar>
+
+<div class="leaderboard-page">
+  <div class="hero-bg-gradients">
+    <div class="gradient-sphere blob-1"></div>
+    <div class="gradient-sphere blob-2"></div>
+    <div class="gradient-sphere blob-3"></div>
+  </div>
+
+  <main class="leaderboard-container animate-slide-up">
+    <header class="leaderboard-header">
+      <h1>🏆 Ranking Global</h1>
+      <p>Los 10 mejores jugadores por puntaje acumulado</p>
+    </header>
+
+    <section class="leaderboard-card" *ngIf="loading">
+      <p class="state-message">Cargando ranking...</p>
+    </section>
+
+    <section class="leaderboard-card" *ngIf="!loading && error">
+      <p class="state-message error">{{ error }}</p>
+    </section>
+
+    <section class="leaderboard-card" *ngIf="!loading && !error && entries.length === 0">
+      <p class="state-message">No hay jugadores registrados todavía.</p>
+    </section>
+
+    <section class="leaderboard-card" *ngIf="!loading && !error && entries.length > 0">
+      <div class="leaderboard-table">
+        <div class="leaderboard-row leaderboard-head">
+          <span>Posición</span>
+          <span>Usuario</span>
+          <span>Puntaje</span>
+        </div>
+
+        <div
+          class="leaderboard-row"
+          *ngFor="let entry of entries"
+          [ngClass]="rankClass(entry.rank)"
+        >
+          <span class="col-rank">
+            <span class="medal" *ngIf="entry.rank <= 3">{{ rankMedal(entry.rank) }}</span>
+            #{{ entry.rank }}
+          </span>
+          <span class="col-user">{{ entry.username }}</span>
+          <span class="col-score">{{ entry.score | number }}</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

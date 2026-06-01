@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Board, Rectangle, SolverType } from '../models/shikaku.model';
+import { Board, LeaderboardEntry, Rectangle, SolverType } from '../models/shikaku.model';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -12,6 +12,10 @@ export class ShikakuService {
     private http: HttpClient,
     private authService: AuthService
   ) {}
+
+  getLeaderboard(): Observable<LeaderboardEntry[]> {
+    return this.http.get<LeaderboardEntry[]>(`${this.api}/leaderboard`);
+  }
 
   getBoard(difficulty: string): Observable<any> {
     return this.http.get(`${this.api}/board?difficulty=${difficulty}`);

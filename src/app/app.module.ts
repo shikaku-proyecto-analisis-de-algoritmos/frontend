@@ -14,6 +14,7 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NewGameComponent } from './components/new-game/new-game.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ProfileComponent } from './components/profile/profile.component';
     HomeComponent,
     NavbarComponent,
     NewGameComponent,
-    ProfileComponent
+    ProfileComponent,
+    LeaderboardComponent
   ],
   imports: [
     BrowserModule,
