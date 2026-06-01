@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { ShikakuService } from 'src/app/services/shikaku.service';
 import { Board, Difficulty, HintResult, Rectangle, SolveResult, SolverType } from '../../models/shikaku.model';
+import { GameSettingsService } from '../../services/game-settings.service';
 
 @Component({
   selector: 'app-grid',
@@ -34,10 +36,13 @@ export class GridComponent implements OnInit, OnDestroy {
   hintMessage = '';
 
   constructor(
-    private shikakuService: ShikakuService
+    private shikakuService: ShikakuService,
+    private gameSettings: GameSettingsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.currentDifficulty = this.gameSettings.getDifficulty();
     this.loadBoard(this.currentDifficulty);
   }
 
@@ -105,13 +110,11 @@ export class GridComponent implements OnInit, OnDestroy {
 
   nextLevel(): void {
     this.currentLevel++;
-    this.loadBoard(this.getDifficultyForLevel(this.currentLevel));
+    this.loadBoard(this.currentDifficulty);
   }
 
-  private getDifficultyForLevel(level: number): Difficulty {
-    if (level <= 3) return 'easy';
-    if (level <= 6) return 'medium';
-    return 'hard';
+  newGame(): void {
+    this.router.navigate(['/nueva-partida']);
   }
 
   onCellMouseDown(row: number, col: number): void {
@@ -150,6 +153,7 @@ export class GridComponent implements OnInit, OnDestroy {
     this.isDrawing = false;
     this.validationStatus = null;
     this.validationMessage = '';
+    this.hintMessage = '';
   }
 
   onMouseLeave(): void {
@@ -183,6 +187,7 @@ export class GridComponent implements OnInit, OnDestroy {
     this.showSolverSelector = true;
     this.validationStatus = null;
     this.validationMessage = '';
+    this.hintMessage = '';
   }
 
   solve(): void {
@@ -242,6 +247,8 @@ export class GridComponent implements OnInit, OnDestroy {
 
   reset(): void {
     this.rectangles = [];
+    this.previewRect = null;
+    this.currentRect = null;
     this.solveStats = null;
     this.showStats = false;
     this.showSolverSelector = false;
@@ -250,8 +257,6 @@ export class GridComponent implements OnInit, OnDestroy {
     this.validationStatus = null;
     this.validationMessage = '';
     this.hintMessage = '';
-    this.resetTimer();
-    this.startTimer();
   }
 
   checkVictory(): void {

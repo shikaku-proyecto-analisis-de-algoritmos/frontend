@@ -5,6 +5,7 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { GridComponent } from './components/grid/grid.component';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HomeComponent } from './components/home/home.component';
+import { NewGameComponent } from './components/new-game/new-game.component';
 
 const routes: Routes = [
 
@@ -19,6 +20,10 @@ const routes: Routes = [
   {
     path: 'grid',
     component: GridComponent
+  },
+  {
+    path: 'nueva-partida',
+    component: NewGameComponent
   },
   {
     path: 'login', // Nueva ruta para el componente de inicio de sesión

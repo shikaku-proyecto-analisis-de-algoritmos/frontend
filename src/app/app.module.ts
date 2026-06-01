@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { LogInComponent } from './components/log-in/log-in.component';
 import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { NewGameComponent } from './components/new-game/new-game.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     SignInComponent,
     LogInComponent,
     HomeComponent,
-    NavbarComponent
+    NavbarComponent,
+    NewGameComponent
   ],
   imports: [
     BrowserModule,

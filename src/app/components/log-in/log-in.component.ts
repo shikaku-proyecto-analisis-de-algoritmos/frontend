@@ -27,7 +27,7 @@ export class LogInComponent {
     this.authService.login(credentials).subscribe({
       next: (response) => {
         console.log('Login exitoso, token:', response.access_token);
-        this.router.navigate(['/grid']); // Redirección al juego
+        this.router.navigate(['/nueva-partida']);
       },
       error: (error) => {
         alert('Error al iniciar sesión: Credenciales incorrectas');

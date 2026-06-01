@@ -10,7 +10,6 @@ export class HomeComponent {
   constructor(private router: Router) {}
 
   irAlJuego(): void {
-    // Redirigir al grid del juego
-    this.router.navigate(['/grid']);
+    this.router.navigate(['/nueva-partida']);
   }
 }

@@ -1,0 +1,39 @@
+<app-navbar></app-navbar>
+
+<div class="new-game-page">
+  <div class="hero-bg-gradients">
+    <div class="gradient-sphere blob-1"></div>
+    <div class="gradient-sphere blob-2"></div>
+    <div class="gradient-sphere blob-3"></div>
+  </div>
+
+  <main class="new-game-container">
+    <section class="new-game-card animate-slide-up">
+      <span class="badge badge-premium px-3 py-2 rounded-pill mb-3 text-uppercase font-monospace">
+        Nueva Partida
+      </span>
+
+      <h1 class="new-game-title">Selecciona una dificultad</h1>
+
+      <div class="difficulty-list">
+        <button
+          type="button"
+          class="difficulty-option"
+          *ngFor="let option of difficultyOptions"
+          [class.selected]="selectedDifficulty === option.value"
+          (click)="selectDifficulty(option.value)"
+        >
+          <span class="difficulty-dot" [ngClass]="option.marker"></span>
+          <span class="difficulty-copy">
+            <span class="difficulty-label">{{ option.label }}</span>
+            <span class="difficulty-board">{{ option.boardSize }}</span>
+          </span>
+        </button>
+      </div>
+
+      <button class="btn-start-game mt-4" type="button" (click)="startGame()">
+        Comenzar Partida
+      </button>
+    </section>
+  </main>
+</div>

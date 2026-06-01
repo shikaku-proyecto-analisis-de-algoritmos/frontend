@@ -18,7 +18,7 @@
         🎮 Modo Puzzle Activo
       </span>
       <h1 class="game-title text-white fw-bold mb-1">Tablero <span class="text-gradient-gold">Shikaku</span></h1>
-      <p class="text-white-50 small font-monospace mb-0">Divide el tablero en rectángulos perfectos</p>
+      <p class="text-white-50 small font-monospace mb-0">Nivel {{ currentLevel }} - {{ currentDifficulty | titlecase }}</p>
     </div>
 
     <!-- Grid Card -->
@@ -33,7 +33,7 @@
             <span class="timer-value font-monospace">{{ formattedTime }}</span>
           </div>
           <div class="timer-divider mx-2"></div>
-          <button class="btn-timer-reset d-flex align-items-center justify-content-center" (click)="reset()" title="Reiniciar juego">
+          <button class="btn-timer-reset d-flex align-items-center justify-content-center" (click)="reset()" title="Reiniciar tablero">
             🔄
           </button>
         </div>
@@ -115,6 +115,10 @@
         <button class="btn-next d-flex align-items-center gap-2" (click)="nextLevel()">
           <span class="btn-icon">⏭️</span>
           <span class="btn-text">Siguiente Nivel</span>
+        </button>
+        <button class="btn-verify d-flex align-items-center gap-2" (click)="newGame()">
+          <span class="btn-icon">+</span>
+          <span class="btn-text">Nueva Partida</span>
         </button>
       </div>
 
