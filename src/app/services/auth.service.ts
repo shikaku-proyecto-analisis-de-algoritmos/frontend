@@ -7,7 +7,7 @@ import { AuthUser, GoogleAuthRequest, LoginRequest, RegisterRequest, TokenRespon
   providedIn: 'root'
 })
 export class AuthService {
-  private api = 'http://localhost:8000';
+  private api = 'https://backend-production-bc86.up.railway.app';
   private tokenKey = 'shikaku.token';
   private usernameKey = 'shikaku.username';
   private avatarKey = 'shikaku.avatar_url';

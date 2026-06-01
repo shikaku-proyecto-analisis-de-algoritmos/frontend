@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class ShikakuService {
-  private api = 'http://localhost:8000';
+  private api = 'https://backend-production-bc86.up.railway.app';
 
   constructor(
     private http: HttpClient,
