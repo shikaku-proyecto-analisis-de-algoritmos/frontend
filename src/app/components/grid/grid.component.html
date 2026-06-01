@@ -43,6 +43,7 @@
       <div
         class="game-grid"
         *ngIf="board"
+        [class.consult-mode]="consultMode"
         (mouseleave)="onMouseLeave()"
       >
         <div class="grid-row" *ngFor="let row of board.cells; let r = index">
@@ -55,7 +56,7 @@
             (mousemove)="onCellMouseMove(r, c)"
             (mouseup)="onCellMouseUp(r, c)"
           >
-            <span *ngIf="cell !== 0">{{ cell }}</span>
+            <span class="clue-number" *ngIf="cell !== 0">{{ cell }}</span>
           </div>
         </div>
       </div>
@@ -107,9 +108,14 @@
           <span class="btn-text">Resolver Puzzle</span>
         </button>
 
-        <button class="btn-verify d-flex align-items-center gap-2" (click)="getHint()">
+        <button
+          class="btn-verify d-flex align-items-center gap-2"
+          [class.btn-consult-active]="consultMode"
+          (click)="toggleConsultMode()"
+          [disabled]="isAnimating"
+        >
           <span class="btn-icon">?</span>
-          <span class="btn-text">Pista</span>
+          <span class="btn-text">{{ consultMode ? 'Cancelar consulta' : 'Pista' }}</span>
         </button>
 
         <button class="btn-next d-flex align-items-center gap-2" (click)="nextLevel()">

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShikakuService } from 'src/app/services/shikaku.service';
-import { Board, Difficulty, HintResult, Rectangle, SolveResult, SolverType } from '../../models/shikaku.model';
+import { Board, Difficulty, Rectangle, SolveResult, SolverType } from '../../models/shikaku.model';
 import { AuthService } from '../../services/auth.service';
 import { GameSettingsService } from '../../services/game-settings.service';
 
@@ -12,6 +12,7 @@ import { GameSettingsService } from '../../services/game-settings.service';
 })
 export class GridComponent implements OnInit, OnDestroy {
   board: Board | null = null;
+  boardId: string | null = null;
   rectangles: Rectangle[] = [];
   currentRect: Partial<Rectangle> | null = null;
   previewRect: Rectangle | null = null;
@@ -38,6 +39,11 @@ export class GridComponent implements OnInit, OnDestroy {
   hintsUsed = 0;
   solveUsed = false;
 
+  consultMode = false;
+  regionHighlight: Rectangle | null = null;
+  isQueryingRegion = false;
+  private regionHighlightTimeout: ReturnType<typeof setTimeout> | null = null;
+
   constructor(
     private shikakuService: ShikakuService,
     private authService: AuthService,
@@ -52,6 +58,7 @@ export class GridComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopTimer();
+    this.clearRegionHighlight();
   }
 
   // --- Métodos del Temporizador ---
@@ -99,6 +106,7 @@ export class GridComponent implements OnInit, OnDestroy {
     this.currentDifficulty = difficulty;
     this.shikakuService.getBoard(difficulty).subscribe(data => {
       this.board = data.board;
+      this.boardId = data.boardId;
       this.rectangles = [];
       this.previewRect = null;
       this.solveStats = null;
@@ -109,6 +117,7 @@ export class GridComponent implements OnInit, OnDestroy {
       this.hintMessage = '';
       this.hintsUsed = 0;
       this.solveUsed = false;
+      this.exitConsultMode();
       this.resetTimer();
       this.startTimer();
       if (this.authService.isAuthenticated()) {
@@ -130,13 +139,17 @@ export class GridComponent implements OnInit, OnDestroy {
 
   onCellMouseDown(row: number, col: number): void {
     if (this.isAnimating) return;
+    if (this.consultMode) {
+      this.onConsultClueSelect(row, col);
+      return;
+    }
     this.isDrawing = true;
     this.currentRect = { startRow: row, startCol: col };
     this.previewRect = { startRow: row, startCol: col, endRow: row, endCol: col };
   }
 
   onCellMouseMove(row: number, col: number): void {
-    if (!this.isDrawing || !this.currentRect) return;
+    if (this.consultMode || !this.isDrawing || !this.currentRect) return;
 
     this.previewRect = {
       startRow: Math.min(this.currentRect.startRow!, row),
@@ -195,6 +208,7 @@ export class GridComponent implements OnInit, OnDestroy {
   // ─────────────────────────────────────────────────
   openSolverSelector(): void {
     if (!this.board || this.isSolving) return;
+    this.exitConsultMode();
     this.showSolverSelector = true;
     this.validationStatus = null;
     this.validationMessage = '';
@@ -277,6 +291,7 @@ export class GridComponent implements OnInit, OnDestroy {
     this.validationStatus = null;
     this.validationMessage = '';
     this.hintMessage = '';
+    this.exitConsultMode();
   }
 
   checkVictory(): void {
@@ -315,35 +330,102 @@ export class GridComponent implements OnInit, OnDestroy {
     });
   }
 
-  getHint(): void {
-    if (!this.board) return;
+  toggleConsultMode(): void {
+    if (!this.board || this.isAnimating) return;
 
-    this.hintsUsed++;
-    this.shikakuService.hint(
-      this.board,
-      this.rectangles,
+    if (this.consultMode) {
+      this.exitConsultMode();
+      return;
+    }
+
+    this.consultMode = true;
+    this.clearRegionHighlight();
+    this.hintMessage = 'Selecciona un número para revelar su región.';
+    this.validationStatus = null;
+    this.validationMessage = '';
+    this.showSolverSelector = false;
+  }
+
+  exitConsultMode(): void {
+    this.consultMode = false;
+    this.isQueryingRegion = false;
+    this.clearRegionHighlight();
+    if (this.hintMessage === 'Selecciona un número para revelar su región.') {
+      this.hintMessage = '';
+    }
+  }
+
+  private clearRegionHighlight(): void {
+    if (this.regionHighlightTimeout) {
+      clearTimeout(this.regionHighlightTimeout);
+      this.regionHighlightTimeout = null;
+    }
+    this.regionHighlight = null;
+  }
+
+  private showRegionHighlight(rect: Rectangle): void {
+    this.clearRegionHighlight();
+    this.regionHighlight = rect;
+    this.regionHighlightTimeout = setTimeout(() => {
+      this.regionHighlight = null;
+      this.regionHighlightTimeout = null;
+    }, 5000);
+  }
+
+  onConsultClueSelect(row: number, col: number): void {
+    if (!this.board || !this.boardId || this.isQueryingRegion) return;
+
+    const value = this.board.cells[row][col];
+    if (value <= 0) {
+      this.hintMessage = 'Selecciona una celda que contenga un número.';
+      return;
+    }
+
+    this.isQueryingRegion = true;
+    this.hintMessage = 'Consultando región...';
+
+    this.shikakuService.queryRegion(
+      this.boardId,
+      row,
+      col,
       this.currentDifficulty,
       this.currentLevel,
       this.timeElapsed
     ).subscribe({
-      next: (data: HintResult) => {
-        this.previewRect = data.hintRect;
-        this.hintMessage = data.message;
+      next: (region) => {
+        this.hintsUsed++;
+        this.showRegionHighlight(region);
+        this.hintMessage = `Región de área ${value} revelada.`;
+        this.isQueryingRegion = false;
       },
       error: (err) => {
-        console.error('Error al obtener pista', err);
-        this.hintsUsed = Math.max(this.hintsUsed - 1, 0);
-        this.hintMessage = 'No se pudo obtener una pista. Intenta nuevamente.';
+        console.error('Error al consultar región', err);
+        this.hintMessage = err?.error?.detail || 'No se pudo consultar la región.';
+        this.isQueryingRegion = false;
       }
     });
   }
 
+  isClueCell(row: number, col: number): boolean {
+    return !!this.board && this.board.cells[row][col] > 0;
+  }
+
+  isInRegionHighlight(row: number, col: number): boolean {
+    return !!this.regionHighlight && this.inRect(row, col, this.regionHighlight);
+  }
+
   getCellClasses(r: number, c: number): { [key: string]: boolean } {
     const classes: { [key: string]: boolean } = {};
-    
-    // Buscar si la celda está dentro de un rectángulo ya confirmado
+
+    if (this.regionHighlight && this.inRect(r, c, this.regionHighlight)) {
+      classes['region-top'] = r === this.regionHighlight.startRow;
+      classes['region-bottom'] = r === this.regionHighlight.endRow;
+      classes['region-left'] = c === this.regionHighlight.startCol;
+      classes['region-right'] = c === this.regionHighlight.endCol;
+    }
+
     const rect = this.rectangles.find(rect => this.inRect(r, c, rect));
-    if (rect) {
+    if (rect && !this.isInRegionHighlight(r, c)) {
       classes['border-top-thick'] = r === rect.startRow;
       classes['border-bottom-thick'] = r === rect.endRow;
       classes['border-left-thick'] = c === rect.startCol;
@@ -365,12 +447,20 @@ export class GridComponent implements OnInit, OnDestroy {
       classes['border-left-none'] = c > this.previewRect.startCol;
       classes['border-right-none'] = c < this.previewRect.endCol;
     }
+
+    if (this.consultMode && this.isClueCell(r, c)) {
+      classes['clue-selectable'] = true;
+    }
     
     return classes;
   }
 
   getRectColor(row: number, col: number): string {
-    // Primero mostrar preview (encima de todo)
+    if (this.regionHighlight && this.inRect(row, col, this.regionHighlight)) {
+      return 'rgba(0, 229, 255, 0.42)';
+    }
+
+    // Preview al dibujar (no confundir con consulta de región)
     if (this.previewRect && this.inRect(row, col, this.previewRect)) {
       const futureIndex = this.rectangles.filter(
         r => !this.overlaps(r, this.previewRect!)

@@ -35,3 +35,15 @@ export interface HintResult {
   message: string;
   forced?: boolean;
 }
+
+export interface RegionQueryResult {
+  startRow: number;
+  startCol: number;
+  endRow: number;
+  endCol: number;
+}
+
+export interface BoardResponse {
+  board: Board;
+  boardId: string;
+}

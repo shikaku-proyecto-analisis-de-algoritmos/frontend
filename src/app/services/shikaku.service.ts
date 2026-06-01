@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Board, LeaderboardEntry, Rectangle, SolverType } from '../models/shikaku.model';
+import { Board, BoardResponse, LeaderboardEntry, Rectangle, RegionQueryResult, SolverType } from '../models/shikaku.model';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,8 +17,8 @@ export class ShikakuService {
     return this.http.get<LeaderboardEntry[]>(`${this.api}/leaderboard`);
   }
 
-  getBoard(difficulty: string): Observable<any> {
-    return this.http.get(`${this.api}/board?difficulty=${difficulty}`);
+  getBoard(difficulty: string): Observable<BoardResponse> {
+    return this.http.get<BoardResponse>(`${this.api}/board?difficulty=${difficulty}`);
   }
 
   getGameLevel(id: number): Observable<any> {
@@ -53,6 +53,28 @@ export class ShikakuService {
     return this.http.post(
       `${this.api}/hint`,
       { board, user_rectangles: userRectangles, difficulty, level, elapsed_secs: elapsedSecs },
+      { headers: this.authService.authHeaders() }
+    );
+  }
+
+  queryRegion(
+    boardId: string,
+    clueRow: number,
+    clueCol: number,
+    difficulty?: string,
+    level?: number,
+    elapsedSecs?: number
+  ): Observable<RegionQueryResult> {
+    return this.http.post<RegionQueryResult>(
+      `${this.api}/hint/region`,
+      {
+        board_id: boardId,
+        clue_row: clueRow,
+        clue_col: clueCol,
+        difficulty,
+        level,
+        elapsed_secs: elapsedSecs
+      },
       { headers: this.authService.authHeaders() }
     );
   }
