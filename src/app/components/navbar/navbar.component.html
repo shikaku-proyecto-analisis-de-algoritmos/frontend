@@ -18,15 +18,22 @@
         <li class="nav-item" *ngIf="showInfoLinks">
           <a class="nav-link text-white-50 hover-light px-3" routerLink="/" fragment="caracteristicas">Características</a>
         </li>
-        <li class="nav-item ms-lg-3">
+        <li class="nav-item ms-lg-3" *ngIf="!username">
           <a class="btn btn-outline-light btn-nav-login px-4 rounded-pill transition-all" routerLink="/login">
             Iniciar Sesión
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="!username">
           <a class="btn btn-accent-purple px-4 rounded-pill transition-all text-white shadow-sm" routerLink="/registro">
             Registrarse
           </a>
+        </li>
+        <li class="nav-item d-flex align-items-center gap-2" *ngIf="username">
+          <a class="profile-pill" routerLink="/perfil" title="Ver perfil">
+            <span class="profile-avatar">{{ username.charAt(0).toUpperCase() }}</span>
+            <span>{{ username }}</span>
+          </a>
+          <button class="btn-logout" type="button" (click)="logout()">Salir</button>
         </li>
       </ul>
     </div>

@@ -1,25 +1,70 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { RegisterRequest, LoginRequest } from '../models/auth.model'; // Asegúrate de que la ruta sea correcta
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { LoginRequest, RegisterRequest, TokenResponse } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // Ajusta esta URL a la de tu backend para el registro de usuarios
-  private apiUrl = 'http://localhost:8000/register'; 
+  private api = 'http://localhost:8000';
+  private tokenKey = 'shikaku.token';
+  private usernameKey = 'shikaku.username';
+  private authState = new BehaviorSubject<string | null>(this.getUsername());
+  user$ = this.authState.asObservable();
 
   constructor(private http: HttpClient) { }
 
   register(userData: RegisterRequest): Observable<any> {
-    // Aquí se realiza la petición POST al backend
-    return this.http.post<any>(this.apiUrl, userData);
+    return this.http.post<any>(`${this.api}/register`, userData);
   }
 
-  login(credentials: LoginRequest): Observable<any> {
-    const loginUrl = `http://localhost:8000/login`;
-    return this.http.post<any>(loginUrl, credentials);
+  login(credentials: LoginRequest): Observable<TokenResponse> {
+    return this.http.post<TokenResponse>(`${this.api}/login`, credentials).pipe(
+      tap(response => this.setSession(response))
+    );
   }
 
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.usernameKey);
+    this.authState.next(null);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  getUsername(): string | null {
+    return localStorage.getItem(this.usernameKey);
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
+  authHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
+  }
+
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.api}/profile`, { headers: this.authHeaders() });
+  }
+
+  getStats(): Observable<any> {
+    return this.http.get(`${this.api}/profile/stats`, { headers: this.authHeaders() });
+  }
+
+  getHistory(): Observable<any> {
+    return this.http.get(`${this.api}/profile/history`, { headers: this.authHeaders() });
+  }
+
+  private setSession(response: TokenResponse): void {
+    localStorage.setItem(this.tokenKey, response.access_token);
+    if (response.username) {
+      localStorage.setItem(this.usernameKey, response.username);
+    }
+    this.authState.next(response.username || this.getUsername());
+  }
 }

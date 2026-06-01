@@ -11,6 +11,7 @@ export interface RegisterRequest {
 export interface TokenResponse {
   access_token: string;
   token_type: string;
+  username?: string;
 }
 
 export interface Player {

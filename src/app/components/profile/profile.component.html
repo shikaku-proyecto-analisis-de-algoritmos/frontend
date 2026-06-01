@@ -1,0 +1,124 @@
+<app-navbar></app-navbar>
+
+<div class="profile-page">
+  <div class="hero-bg-gradients">
+    <div class="gradient-sphere blob-1"></div>
+    <div class="gradient-sphere blob-2"></div>
+    <div class="gradient-sphere blob-3"></div>
+  </div>
+
+  <main class="profile-container" *ngIf="!loading && !error">
+    <section class="profile-header">
+      <div class="avatar">{{ profile.username.charAt(0).toUpperCase() }}</div>
+      <div>
+        <span class="eyebrow">Perfil de jugador</span>
+        <h1>{{ profile.username }}</h1>
+        <p>Registro: {{ profile.registeredAt | date:'mediumDate' }} · Ultimo acceso: {{ profile.lastAccess | date:'mediumDate' }}</p>
+      </div>
+    </section>
+
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <span>Niveles completados</span>
+        <strong>{{ stats.kpis.levelsCompleted }}</strong>
+      </article>
+      <article class="kpi-card">
+        <span>Tiempo jugado</span>
+        <strong>{{ stats.kpis.totalPlayedLabel }}</strong>
+      </article>
+      <article class="kpi-card">
+        <span>Racha actual</span>
+        <strong>{{ stats.kpis.currentStreak }} dias</strong>
+      </article>
+      <article class="kpi-card">
+        <span>Pistas usadas</span>
+        <strong>{{ stats.kpis.hintsUsed }}</strong>
+      </article>
+      <article class="kpi-card">
+        <span>Puntaje total</span>
+        <strong>{{ profile.score }}</strong>
+      </article>
+      <article class="kpi-card">
+        <span>Ingresos</span>
+        <strong>{{ stats.kpis.loginCount }}</strong>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="chart-card">
+        <h2>Niveles por dificultad</h2>
+        <div class="bar-row" *ngFor="let item of levelsChart">
+          <span>{{ item.label }}</span>
+          <div class="bar-track"><div class="bar-fill" [style.width]="barWidth(item.value, levelsChart)"></div></div>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <h2>Uso de algoritmos</h2>
+        <div class="bar-row" *ngFor="let item of algorithmsChart">
+          <span>{{ item.label }}</span>
+          <div class="bar-track"><div class="bar-fill teal" [style.width]="barWidth(item.value, algorithmsChart)"></div></div>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <h2>Tiempo manual promedio</h2>
+        <div class="bar-row" *ngFor="let item of manualTimesChart">
+          <span>{{ item.label }}</span>
+          <div class="bar-track"><div class="bar-fill gold" [style.width]="barWidth(item.value, manualTimesChart)"></div></div>
+          <strong>{{ item.value }}s</strong>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <h2>Uso de pistas por dia</h2>
+        <p class="empty" *ngIf="hintsChart.length === 0">Aun no hay pistas registradas.</p>
+        <div class="bar-row compact" *ngFor="let item of hintsChart">
+          <span>{{ item.label | date:'MMM d' }}</span>
+          <div class="bar-track"><div class="bar-fill" [style.width]="barWidth(item.value, hintsChart)"></div></div>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <h2>Actividad semanal</h2>
+        <p class="empty" *ngIf="activityChart.length === 0">Aun no hay ingresos registrados.</p>
+        <div class="bar-row compact" *ngFor="let item of activityChart">
+          <span>{{ item.label | date:'MMM d' }}</span>
+          <div class="bar-track"><div class="bar-fill teal" [style.width]="barWidth(item.value, activityChart)"></div></div>
+          <strong>{{ item.value }}</strong>
+        </div>
+      </article>
+
+      <article class="chart-card">
+        <h2>Resolver Puzzle</h2>
+        <div class="metric-list">
+          <p>Total usos: <strong>{{ stats.kpis.solveCount }}</strong></p>
+          <p>Promedio hasta resolver: <strong>{{ stats.solveWaitStats.average }}s</strong></p>
+          <p>Mediana: <strong>{{ stats.solveWaitStats.median }}s</strong></p>
+          <p>Min / Max: <strong>{{ stats.solveWaitStats.min }}s / {{ stats.solveWaitStats.max }}s</strong></p>
+        </div>
+      </article>
+    </section>
+
+    <section class="history-card">
+      <h2>Historial reciente</h2>
+      <div class="history-row" *ngFor="let game of history">
+        <span>{{ game.completedAt | date:'short' }}</span>
+        <strong>{{ game.difficulty | titlecase }} · Nivel {{ game.level }}</strong>
+        <span>{{ game.timeSecs }}s · {{ game.manual ? 'Manual' : 'Con resolver' }} · {{ game.hintsUsed }} pistas</span>
+      </div>
+      <p class="empty" *ngIf="history.length === 0">Aun no hay partidas completadas.</p>
+    </section>
+  </main>
+
+  <main class="profile-container" *ngIf="loading">
+    <section class="profile-header"><h1>Cargando perfil...</h1></section>
+  </main>
+
+  <main class="profile-container" *ngIf="error">
+    <section class="profile-header"><h1>{{ error }}</h1></section>
+  </main>
+</div>

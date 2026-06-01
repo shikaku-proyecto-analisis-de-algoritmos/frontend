@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShikakuService } from 'src/app/services/shikaku.service';
 import { Board, Difficulty, HintResult, Rectangle, SolveResult, SolverType } from '../../models/shikaku.model';
+import { AuthService } from '../../services/auth.service';
 import { GameSettingsService } from '../../services/game-settings.service';
 
 @Component({
@@ -34,9 +35,12 @@ export class GridComponent implements OnInit, OnDestroy {
   validationStatus: 'success' | 'error' | null = null;
   validationMessage = '';
   hintMessage = '';
+  hintsUsed = 0;
+  solveUsed = false;
 
   constructor(
     private shikakuService: ShikakuService,
+    private authService: AuthService,
     private gameSettings: GameSettingsService,
     private router: Router
   ) {}
@@ -103,8 +107,15 @@ export class GridComponent implements OnInit, OnDestroy {
       this.validationStatus = null;
       this.validationMessage = '';
       this.hintMessage = '';
+      this.hintsUsed = 0;
+      this.solveUsed = false;
       this.resetTimer();
       this.startTimer();
+      if (this.authService.isAuthenticated()) {
+        this.shikakuService.startSession(difficulty, this.currentLevel).subscribe({
+          error: (err) => console.error('Error al registrar sesion de juego', err)
+        });
+      }
     });
   }
 
@@ -199,7 +210,15 @@ export class GridComponent implements OnInit, OnDestroy {
     this.validationStatus = null;
     this.validationMessage = '';
 
-    this.shikakuService.solve(this.board, this.solverType).subscribe({
+    this.solveUsed = true;
+
+    this.shikakuService.solve(
+      this.board,
+      this.solverType,
+      this.currentDifficulty,
+      this.currentLevel,
+      this.timeElapsed
+    ).subscribe({
       next: (data) => {
         this.solveStats = {
           solution: data.solution,
@@ -213,6 +232,7 @@ export class GridComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.error('Error al resolver el puzzle', err);
         this.isSolving = false;
+        this.solveUsed = false;
         this.validationStatus = 'error';
         this.validationMessage = 'No se pudo resolver el puzzle. Intenta nuevamente.';
       }
@@ -260,13 +280,23 @@ export class GridComponent implements OnInit, OnDestroy {
   }
 
   checkVictory(): void {
+    if (this.validationStatus === 'success') return;
+
     if (!this.board || this.rectangles.length === 0) {
       this.validationStatus = 'error';
       this.validationMessage = 'Dibuja al menos un rectangulo antes de verificar.';
       return;
     }
 
-    this.shikakuService.validate(this.board, this.rectangles).subscribe({
+    this.shikakuService.validate(
+      this.board,
+      this.rectangles,
+      this.currentDifficulty,
+      this.currentLevel,
+      this.timeElapsed,
+      this.hintsUsed,
+      this.solveUsed
+    ).subscribe({
       next: (data) => {
         if (data.valid) {
           this.stopTimer();
@@ -288,13 +318,21 @@ export class GridComponent implements OnInit, OnDestroy {
   getHint(): void {
     if (!this.board) return;
 
-    this.shikakuService.hint(this.board, this.rectangles).subscribe({
+    this.hintsUsed++;
+    this.shikakuService.hint(
+      this.board,
+      this.rectangles,
+      this.currentDifficulty,
+      this.currentLevel,
+      this.timeElapsed
+    ).subscribe({
       next: (data: HintResult) => {
         this.previewRect = data.hintRect;
         this.hintMessage = data.message;
       },
       error: (err) => {
         console.error('Error al obtener pista', err);
+        this.hintsUsed = Math.max(this.hintsUsed - 1, 0);
         this.hintMessage = 'No se pudo obtener una pista. Intenta nuevamente.';
       }
     });
