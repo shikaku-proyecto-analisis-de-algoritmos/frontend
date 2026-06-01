@@ -94,7 +94,7 @@ export class SignInComponent implements AfterViewInit, OnDestroy {
       next: () => {
         this.isLoadingGoogle = false;
         this.successMessage = 'Cuenta creada correctamente.';
-        this.router.navigate(['/nueva-partida']);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         this.isLoadingGoogle = false;

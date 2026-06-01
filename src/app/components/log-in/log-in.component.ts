@@ -42,7 +42,7 @@ export class LogInComponent implements AfterViewInit, OnDestroy {
     this.authService.login(credentials).subscribe({
       next: () => {
         this.successMessage = 'Sesion iniciada correctamente.';
-        this.router.navigate(['/nueva-partida']);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         this.errorMessage = error?.error?.detail || 'No se pudo iniciar sesion.';
@@ -86,7 +86,7 @@ export class LogInComponent implements AfterViewInit, OnDestroy {
       next: () => {
         this.isLoadingGoogle = false;
         this.successMessage = 'Sesion iniciada correctamente.';
-        this.router.navigate(['/nueva-partida']);
+        this.router.navigate(['/']);
       },
       error: (error) => {
         this.isLoadingGoogle = false;
